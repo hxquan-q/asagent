@@ -69,11 +69,17 @@ def health() -> dict:
 _default_dist = Path(__file__).resolve().parents[2] / "frontend/dist"
 _frontend_dist = Path(settings.FRONTEND_DIST) if settings.FRONTEND_DIST else _default_dist
 if _frontend_dist.is_dir():
+    _dist_root = _frontend_dist.resolve()
+
     @app.get("/{full_path:path}")
     def spa(full_path: str):
         if full_path.startswith("api/"):
             raise HTTPException(404, "not found")
-        candidate = _frontend_dist / full_path
+        candidate = (_frontend_dist / full_path).resolve()
+        try:
+            candidate.relative_to(_dist_root)  # block path traversal
+        except ValueError:
+            raise HTTPException(404, "not found") from None
         if full_path and candidate.is_file():
             return FileResponse(candidate)
         return FileResponse(_frontend_dist / "index.html")
