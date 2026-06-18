@@ -1,0 +1,48 @@
+# Canonical containerised deploy: nginx (UI, :8899) -> backend (API, :8000) -> postgres
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: asagent
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-asagent}
+      POSTGRES_DB: asagent
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U asagent"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ..
+      dockerfile: deploy/backend.Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+psycopg://asagent:${POSTGRES_PASSWORD:-asagent}@db:5432/asagent
+      SECRET_KEY: ${SECRET_KEY:?SECRET_KEY required}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET required}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?ADMIN_PASSWORD required}
+      SANDBOX_BACKEND: ${SANDBOX_BACKEND:-subprocess}
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+    volumes:
+      - ../data:/app/data
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: deploy/frontend.Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8899:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata: {}
