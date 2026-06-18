@@ -21,6 +21,7 @@ _FILE_MIME_ALLOWLIST = {
     "image/svg+xml",
 }
 _MAX_FILE_BYTES = 10 * 1024 * 1024  # 10 MB
+_MAX_DATA_URL = 2 * 1024 * 1024     # 2 MB inline data: URL
 
 
 @tool
@@ -53,6 +54,8 @@ def make_html(html: str, title: str = "") -> str:
 def make_image(url: str, alt: str = "", title: str = "") -> str:
     """Show an image. ``url`` may be an http(s) URL or a data: URL (private hosts blocked)."""
     assert_safe_url(url, allow_data=True)
+    if url.startswith("data:") and len(url) > _MAX_DATA_URL:
+        raise ValueError(f"data: URL too large ({len(url)} bytes; max {_MAX_DATA_URL})")
     emit_block(ImageBlock(url=url, alt=alt, title=title))
     return f"Image rendered: {alt or title or url[:40]}"
 

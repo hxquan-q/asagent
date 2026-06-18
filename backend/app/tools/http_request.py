@@ -6,6 +6,8 @@ the default tool set — enable per-agent only when the deployment trusts the mo
 """
 from __future__ import annotations
 
+import re
+
 import httpx
 from langchain_core.tools import tool
 
@@ -13,6 +15,15 @@ from ..core.net import assert_safe_url
 
 _ALLOWED_METHODS = {"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"}
 _DROP_HEADERS = {"authorization", "cookie", "set-cookie"}
+# Redact obvious secrets leaked in response bodies (defence-in-depth).
+_SECRET_RE = re.compile(
+    r"(?i)(api[_-]?key|access[_-]?token|auth[_-]?token|secret|password|passwd|authorization)"
+    r"(\"|'||\s)?\s*[:=]\s*(\"|'|)?[^\"'&\s]{6,}"
+)
+
+
+def _redact(text: str) -> str:
+    return _SECRET_RE.sub(r"\1\2\3***REDACTED***", text)
 
 
 @tool
@@ -37,7 +48,7 @@ def http_request(method: str, url: str, headers: dict | None = None, body: str |
 
     with httpx.Client(timeout=timeout, follow_redirects=False) as client:
         resp = client.request(m, url, headers=clean_headers, content=body)
-    text = resp.text
+    text = _redact(resp.text)
     suffix = "…" if len(text) > 1500 else ""
     return f"HTTP {resp.status_code}\n{text[:1500]}{suffix}"
 
