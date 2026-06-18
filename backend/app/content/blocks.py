@@ -44,6 +44,7 @@ def _sanitize_html(s: str) -> str:
     return nh3.clean(
         s, tags=_HTML_TAGS, attributes=_HTML_ATTRS,
         clean_content_tags={"script", "style"}, strip_comments=True,
+        url_schemes={"http", "https", "mailto"},
     )
 
 
@@ -53,6 +54,7 @@ def _sanitize_svg(s: str) -> str:
     return nh3.clean(
         s, tags=_SVG_TAGS, attributes=_SVG_ATTRS,
         clean_content_tags={"script"}, strip_comments=True,
+        url_schemes={"http", "https"},
     )
 
 

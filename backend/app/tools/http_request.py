@@ -1,13 +1,18 @@
 """Optional outbound HTTP tool.
 
-WARNING: SSRF surface — lets the agent call arbitrary URLs. NOT in the default
-tool set; enable per-agent only when the deployment trusts the model and the
-network egress is controlled. Consider adding an allowlist for production.
+SSRF-guarded: only http(s), private/loopback/non-routable hosts blocked, methods
+restricted, and Authorization/Cookie headers stripped from the request. NOT in
+the default tool set — enable per-agent only when the deployment trusts the model.
 """
 from __future__ import annotations
 
 import httpx
 from langchain_core.tools import tool
+
+from ..core.net import assert_safe_url
+
+_ALLOWED_METHODS = {"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"}
+_DROP_HEADERS = {"authorization", "cookie", "set-cookie"}
 
 
 @tool
@@ -15,17 +20,26 @@ def http_request(method: str, url: str, headers: dict | None = None, body: str |
                  timeout: float = 15.0) -> str:
     """Perform an outbound HTTP request and return status + truncated body.
 
+    Internal/private hosts are blocked; Authorization and Cookie headers are dropped.
+
     Args:
-        method: GET | POST | PUT | DELETE.
-        url: absolute URL.
-        headers: optional request headers.
+        method: GET | POST | PUT | PATCH | DELETE | HEAD.
+        url: absolute http(s) URL (private hosts blocked).
+        headers: optional request headers (Authorization/Cookie stripped).
         body: optional request body (string).
         timeout: seconds.
     """
-    with httpx.Client(timeout=timeout) as client:
-        resp = client.request(method, url, headers=headers or {}, content=body)
+    m = (method or "").upper()
+    if m not in _ALLOWED_METHODS:
+        raise ValueError(f"method not allowed: {method!r}; allowed: {sorted(_ALLOWED_METHODS)}")
+    assert_safe_url(url)
+    clean_headers = {k: v for k, v in (headers or {}).items() if k.lower() not in _DROP_HEADERS}
+
+    with httpx.Client(timeout=timeout, follow_redirects=False) as client:
+        resp = client.request(m, url, headers=clean_headers, content=body)
     text = resp.text
-    return f"HTTP {resp.status_code}\n{(text[:1500])}{'…' if len(text) > 1500 else ''}"
+    suffix = "…" if len(text) > 1500 else ""
+    return f"HTTP {resp.status_code}\n{text[:1500]}{suffix}"
 
 
 HTTP_TOOLS = [http_request]
