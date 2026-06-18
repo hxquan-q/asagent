@@ -40,4 +40,8 @@ def build_openai_compat(cfg) -> BaseChatModel:
     for k, v in (cfg.additional_params or {}).items():
         kwargs[k] = v
 
+    # Bound the HTTP request so a hung provider can't stall the agent forever.
+    if "timeout" not in kwargs and "request_timeout" not in kwargs:
+        kwargs["timeout"] = 120
+
     return CompatChatOpenAI(**kwargs)
