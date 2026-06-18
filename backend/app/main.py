@@ -2,12 +2,14 @@
 from __future__ import annotations
 
 import logging
+import os
 from contextlib import asynccontextmanager
+from pathlib import Path
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from .api.v1 import api_router
 from .bootstrap import init_db, seed_admin
@@ -60,3 +62,18 @@ app.include_router(api_router, prefix="/api/v1")
 @app.get("/health")
 def health() -> dict:
     return {"ok": True, "app": settings.APP_NAME}
+
+
+# ---- optional SPA static hosting (single-port deploy) ----
+# Default to <repo>/frontend/dist (relative to this file), overridable via settings.
+_default_dist = Path(__file__).resolve().parents[2] / "frontend/dist"
+_frontend_dist = Path(settings.FRONTEND_DIST) if settings.FRONTEND_DIST else _default_dist
+if _frontend_dist.is_dir():
+    @app.get("/{full_path:path}")
+    def spa(full_path: str):
+        if full_path.startswith("api/"):
+            raise HTTPException(404, "not found")
+        candidate = _frontend_dist / full_path
+        if full_path and candidate.is_file():
+            return FileResponse(candidate)
+        return FileResponse(_frontend_dist / "index.html")

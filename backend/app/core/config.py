@@ -49,6 +49,7 @@ class Settings(BaseSettings):
     # Storage
     SKILLS_DIR: str = "./data/skills"
     FILES_DIR: str = "./data/files"
+    FRONTEND_DIST: str = ""  # optional absolute path to built frontend dist
 
     # Sandbox
     SANDBOX_BACKEND: str = "pyodide"  # pyodide | docker
