@@ -24,3 +24,7 @@ data/files/*
 .vscode/
 .idea/
 .DS_Store
+
+# Runtime logs
+*.log
+
