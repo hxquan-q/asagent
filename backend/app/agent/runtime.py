@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import queue
 import threading
+import time
 from collections.abc import Iterator
 from typing import Any
 
@@ -89,8 +90,17 @@ def run_stream(
     datasource_ids: list[int] | None,
     history: list[BaseMessage] | None = None,
     recursion_limit: int = 25,
+    stall_timeout: float = 180.0,
+    poll_interval: float = 5.0,
 ) -> Iterator[dict[str, Any]]:
-    """Run the agent in a dedicated thread; yield SSE-ready event dicts."""
+    """Run the agent in a dedicated thread; yield SSE-ready event dicts.
+
+    A watchdog bounds stalls: if no event arrives for ``stall_timeout`` seconds
+    (e.g. a hung LLM/tool call), an ``error`` event is emitted and the stream
+    ends so the client connection and queue reader are never blocked forever.
+    The daemon worker is reaped once the underlying call finishes (it is also
+    bounded by the model's request timeout).
+    """
     out: queue.Queue[dict[str, Any] | None] = queue.Queue()
     worker = threading.Thread(
         target=_run_once,
@@ -98,8 +108,19 @@ def run_stream(
         daemon=True,
     )
     worker.start()
+    last_activity = time.monotonic()
     while True:
-        ev = out.get()
+        try:
+            ev = out.get(timeout=poll_interval)
+        except queue.Empty:
+            if not worker.is_alive():
+                yield {"type": "error", "content": "agent worker terminated unexpectedly"}
+                break
+            if time.monotonic() - last_activity > stall_timeout:
+                yield {"type": "error", "content": f"agent stalled (no output for {stall_timeout:.0f}s)"}
+                break
+            continue
+        last_activity = time.monotonic()
         if ev is None:
             break
         yield ev
