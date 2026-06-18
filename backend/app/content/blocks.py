@@ -8,7 +8,52 @@ from __future__ import annotations
 
 from typing import Any, Literal, Union
 
-from pydantic import BaseModel, Field
+import nh3
+from pydantic import BaseModel, Field, field_validator
+
+
+# ---- server-side HTML/SVG sanitisation (defence in depth; client also runs DOMPurify) ----
+_HTML_TAGS = {
+    "a", "abbr", "b", "blockquote", "br", "code", "dd", "del", "div", "dl", "dt", "em",
+    "h1", "h2", "h3", "h4", "h5", "h6", "hr", "i", "img", "ins", "kbd", "li", "ol", "p",
+    "pre", "q", "s", "samp", "small", "span", "strong", "sub", "sup", "table", "tbody",
+    "td", "tfoot", "th", "thead", "tr", "u", "ul", "var", "details", "summary",
+}
+_HTML_ATTRS = {
+    "*": {"class", "style", "title", "id", "colspan", "rowspan", "width", "height", "align", "valign"},
+    "a": {"href", "title", "name", "target"},
+    "img": {"src", "alt", "width", "height"},
+}
+_SVG_TAGS = {
+    "svg", "g", "defs", "symbol", "use", "title", "desc", "path", "rect", "circle",
+    "ellipse", "line", "polyline", "polygon", "text", "tspan", "linearGradient",
+    "radialGradient", "stop", "pattern", "clipPath", "mask",
+}
+_SVG_ATTRS = {
+    "*": {"id", "class", "style", "transform", "viewBox", "preserveAspectRatio", "xmlns",
+          "x", "y", "x1", "y1", "x2", "y2", "cx", "cy", "r", "rx", "ry", "width", "height",
+          "fill", "fill-opacity", "stroke", "stroke-width", "stroke-opacity", "opacity",
+          "d", "points", "font-size", "font-family", "text-anchor", "offset", "stop-color",
+          "stop-opacity", "gradientTransform", "gradientUnits", "href", "xlink:href"},
+}
+
+
+def _sanitize_html(s: str) -> str:
+    if not s:
+        return ""
+    return nh3.clean(
+        s, tags=_HTML_TAGS, attributes=_HTML_ATTRS,
+        clean_content_tags={"script", "style"}, strip_comments=True,
+    )
+
+
+def _sanitize_svg(s: str) -> str:
+    if not s:
+        return ""
+    return nh3.clean(
+        s, tags=_SVG_TAGS, attributes=_SVG_ATTRS,
+        clean_content_tags={"script"}, strip_comments=True,
+    )
 
 
 class TextBlock(BaseModel):
@@ -45,13 +90,23 @@ class DiagramBlock(BaseModel):
 class SvgBlock(BaseModel):
     type: Literal["svg"] = "svg"
     title: str = ""
-    content: str = ""
+    content: str = ""  # server-sanitised (nh3): scripts / event handlers stripped
+
+    @field_validator("content", mode="after")
+    @classmethod
+    def _clean_svg(cls, v: str) -> str:
+        return _sanitize_svg(v)
 
 
 class HtmlBlock(BaseModel):
     type: Literal["html"] = "html"
     title: str = ""
-    content: str = ""  # sanitised client-side with DOMPurify + sandboxed iframe
+    content: str = ""  # server-sanitised (nh3) + client DOMPurify + sandboxed iframe
+
+    @field_validator("content", mode="after")
+    @classmethod
+    def _clean_html(cls, v: str) -> str:
+        return _sanitize_html(v)
 
 
 class ImageBlock(BaseModel):

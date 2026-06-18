@@ -63,8 +63,11 @@ class Settings(BaseSettings):
     def cors_origins(self) -> list[str]:
         raw = self.CORS_ORIGINS.strip()
         if raw.startswith("["):
-            # JSON-array form: must be valid JSON — no silent comma fallback.
-            return [o.strip() for o in json.loads(raw) if isinstance(o, str) and o.strip()]
+            try:
+                data = json.loads(raw)
+            except json.JSONDecodeError as e:
+                raise ValueError(f"CORS_ORIGINS is not valid JSON: {e}") from e
+            return [o.strip() for o in data if isinstance(o, str) and o.strip()]
         return [o.strip() for o in raw.split(",") if o.strip()]
 
     @property
@@ -96,7 +99,13 @@ class Settings(BaseSettings):
 
         Call once at startup. In DEBUG we generate ephemeral random secrets
         (with a warning) so local dev works; in production we fail fast.
+
+        Idempotent: safe to call from multiple entry points (lifespan, get_engine).
         """
+        global _secrets_validated
+        if _secrets_validated:
+            return
+
         import logging
         import secrets as _secrets
 
@@ -136,6 +145,8 @@ class Settings(BaseSettings):
             else:
                 raise RuntimeError("DATABASE_URL must be set via environment.")
 
+        _secrets_validated = True  # noqa: PLW0603 — intentional module-level success flag
+
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
@@ -143,6 +154,9 @@ def get_settings() -> Settings:
 
 
 settings = get_settings()
+
+# Guard for idempotent startup secret validation.
+_secrets_validated = False
 
 
 @lru_cache(maxsize=1)
