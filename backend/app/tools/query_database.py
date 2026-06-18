@@ -17,10 +17,11 @@ from ..content.sink import emit_block
 from ..core.db import get_engine
 from ..datasources import manager
 from ..models import Datasource
+from .context import datasource_allowed
 
 
 def _lookup_datasource(session: Session, name_or_id: str) -> Datasource:
-    """Resolve an enabled datasource by id (int) or name."""
+    """Resolve an enabled datasource by id (int) or name and enforce scope."""
     try:
         ds_id = int(name_or_id)
         stmt = select(Datasource).where(Datasource.id == ds_id, Datasource.enabled == True)  # noqa: E712
@@ -29,6 +30,8 @@ def _lookup_datasource(session: Session, name_or_id: str) -> Datasource:
     ds = session.exec(stmt).first()
     if ds is None:
         raise ValueError(f"datasource '{name_or_id}' not found or disabled")
+    if not datasource_allowed(ds.id):
+        raise PermissionError(f"datasource '{name_or_id}' is not enabled for this agent")
     return ds
 
 

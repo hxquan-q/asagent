@@ -17,6 +17,9 @@ from .config import settings
 
 @lru_cache(maxsize=1)
 def get_engine():
+    # Idempotent: ensures DATABASE_URL + secrets are resolved/validated before
+    # the engine is created, regardless of the entry point.
+    settings.validate_runtime_secrets()
     kwargs: dict = {"pool_pre_ping": True, "pool_recycle": 3600, "echo": settings.DEBUG}
     # pool_size / max_overflow belong to QueuePool (Postgres etc.), not SQLite.
     if not settings.DATABASE_URL.startswith("sqlite"):
