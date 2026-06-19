@@ -1,8 +1,12 @@
 """LLM config CRUD (admin) + set default."""
 from __future__ import annotations
 
+import ipaddress
+import logging
+import socket
 from datetime import datetime
 from typing import Any
+from urllib.parse import urlparse
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, ConfigDict
@@ -13,6 +17,50 @@ from ...core.db import get_session
 from ...core.deps import require_admin
 from ...llm import PROVIDER_DEFAULTS
 from ...models import LlmConfig, User
+
+log = logging.getLogger(__name__)
+
+_ALLOWED_SCHEMES = {"http", "https"}
+
+
+def _validate_url(url: str) -> str | None:
+    """Return an error message if the URL is not safe for outbound requests."""
+    parsed = urlparse(url)
+    if parsed.scheme not in _ALLOWED_SCHEMES:
+        return f"不允许的协议: {parsed.scheme}"
+    hostname = parsed.hostname
+    if not hostname:
+        return "URL 缺少主机名"
+    try:
+        addrs = socket.getaddrinfo(hostname, None, socket.AF_UNSPEC, socket.SOCK_STREAM)
+    except socket.gaierror:
+        return f"无法解析主机: {hostname}"
+    for _, _, _, _, sockaddr in addrs:
+        ip = ipaddress.ip_address(sockaddr[0])
+        if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved:
+            # Allow localhost for local providers (Ollama, etc.)
+            if ip.is_loopback:
+                continue
+            return f"目标地址不允许: {ip}"
+    return None
+
+
+def _sanitize_error(exc: Exception) -> str:
+    """Return a safe error category without leaking internal details."""
+    name = type(exc).__name__
+    mapping = {
+        "ConnectError": "连接失败",
+        "ConnectionError": "连接失败",
+        "TimeoutException": "请求超时",
+        "ReadTimeout": "请求超时",
+        "ConnectTimeout": "连接超时",
+        "HTTPStatusError": "远程服务返回错误",
+        "AuthenticationError": "认证失败",
+        "PermissionDenied": "权限不足",
+        "NotFoundError": "资源未找到",
+        "RateLimitError": "请求过于频繁",
+    }
+    return mapping.get(name, f"操作失败 ({name})")
 
 router = APIRouter(prefix="/llm_configs", tags=["llm_configs"])
 
@@ -127,7 +175,8 @@ def test_config(
         content = resp.content if hasattr(resp, "content") else str(resp)
         return {"ok": True, "reply": content[:200]}
     except Exception as e:
-        return {"ok": False, "error": f"{type(e).__name__}: {e}"}
+        log.warning("llm test failed for config %s: %s", cfg_id, e)
+        return {"ok": False, "error": _sanitize_error(e)}
 
 
 @router.post("/{cfg_id}/models")
@@ -148,6 +197,10 @@ def fetch_models(
     if not base_url:
         return {"ok": False, "error": "未配置 API Base URL", "models": []}
 
+    url_err = _validate_url(base_url)
+    if url_err:
+        return {"ok": False, "error": url_err, "models": []}
+
     try:
         resp = httpx.get(
             f"{base_url}/models",
@@ -160,7 +213,8 @@ def fetch_models(
         models = sorted([m for m in models if m])
         return {"ok": True, "models": models}
     except Exception as e:
-        return {"ok": False, "error": f"{type(e).__name__}: {e}", "models": []}
+        log.warning("fetch_models failed for config %s: %s", cfg_id, e)
+        return {"ok": False, "error": _sanitize_error(e), "models": []}
 
 
 @router.delete("/{cfg_id}")
