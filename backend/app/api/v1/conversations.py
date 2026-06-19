@@ -19,6 +19,25 @@ from ...models import Agent, Conversation, Message
 router = APIRouter(prefix="/conversations", tags=["conversations"])
 
 
+def _scope(principal: Principal):
+    """SQL predicate restricting conversations to the caller.
+
+    External API-key callers see only conversations they created; console
+    (JWT) users see console-originated conversations (``api_key_id IS NULL``).
+    This prevents one API key from reading another's — or the console's —
+    history.
+    """
+    if principal.api_key:
+        return Conversation.api_key_id == principal.api_key.id
+    return Conversation.api_key_id.is_(None)
+
+
+def _owns(conv: Conversation, principal: Principal) -> bool:
+    if principal.api_key:
+        return conv.api_key_id == principal.api_key.id
+    return conv.api_key_id is None
+
+
 def _text_of(message: Message) -> str:
     for b in message.blocks or []:
         if isinstance(b, dict) and b.get("type") == "text":
@@ -67,12 +86,15 @@ class RenameIn(BaseModel):
 
 @router.get("", response_model=list[ConversationSummary])
 def list_conversations(
-    principal: Principal = Depends(get_principal),  # noqa: ARG001
+    principal: Principal = Depends(get_principal),
     session: Session = Depends(get_session),
     limit: int = 100,
 ) -> list[ConversationSummary]:
     convs = session.exec(
-        select(Conversation).order_by(desc(Conversation.created_at)).limit(limit)
+        select(Conversation)
+        .where(_scope(principal))
+        .order_by(desc(Conversation.created_at))
+        .limit(limit)
     ).all()
     if not convs:
         return []
@@ -110,11 +132,11 @@ def list_conversations(
 @router.get("/{conversation_id}", response_model=ConversationDetail)
 def get_conversation(
     conversation_id: int,
-    principal: Principal = Depends(get_principal),  # noqa: ARG001
+    principal: Principal = Depends(get_principal),
     session: Session = Depends(get_session),
 ) -> ConversationDetail:
     conv = session.get(Conversation, conversation_id)
-    if conv is None:
+    if conv is None or not _owns(conv, principal):
         raise HTTPException(404, "conversation not found")
     agent_name = None
     if conv.agent_id:
@@ -140,11 +162,11 @@ def get_conversation(
 def rename_conversation(
     conversation_id: int,
     body: RenameIn,
-    principal: Principal = Depends(get_principal),  # noqa: ARG001
+    principal: Principal = Depends(get_principal),
     session: Session = Depends(get_session),
 ) -> Conversation:
     conv = session.get(Conversation, conversation_id)
-    if conv is None:
+    if conv is None or not _owns(conv, principal):
         raise HTTPException(404, "conversation not found")
     conv.title = body.title.strip()
     session.add(conv)
@@ -156,11 +178,11 @@ def rename_conversation(
 @router.delete("/{conversation_id}")
 def delete_conversation(
     conversation_id: int,
-    principal: Principal = Depends(get_principal),  # noqa: ARG001
+    principal: Principal = Depends(get_principal),
     session: Session = Depends(get_session),
 ) -> dict:
     conv = session.get(Conversation, conversation_id)
-    if conv is None:
+    if conv is None or not _owns(conv, principal):
         raise HTTPException(404, "conversation not found")
     for m in session.exec(
         select(Message).where(Message.conversation_id == conv.id)
