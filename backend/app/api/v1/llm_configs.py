@@ -168,6 +168,13 @@ def test_config(
     row = session.get(LlmConfig, cfg_id)
     if row is None:
         raise HTTPException(404, "llm_config not found")
+
+    base_url = (row.api_base_url or PROVIDER_DEFAULTS.get(row.provider, "")).rstrip("/")
+    if base_url:
+        url_err = _validate_url(base_url)
+        if url_err:
+            return {"ok": False, "error": url_err}
+
     try:
         cfg = build_from_orm(row)
         llm = create_llm(cfg)
@@ -175,7 +182,7 @@ def test_config(
         content = resp.content if hasattr(resp, "content") else str(resp)
         return {"ok": True, "reply": content[:200]}
     except Exception as e:
-        log.warning("llm test failed for config %s: %s", cfg_id, e)
+        log.warning("llm test failed for config %s: %s", cfg_id, type(e).__name__)
         return {"ok": False, "error": _sanitize_error(e)}
 
 
@@ -213,7 +220,7 @@ def fetch_models(
         models = sorted([m for m in models if m])
         return {"ok": True, "models": models}
     except Exception as e:
-        log.warning("fetch_models failed for config %s: %s", cfg_id, e)
+        log.warning("fetch_models failed for config %s: %s", cfg_id, type(e).__name__)
         return {"ok": False, "error": _sanitize_error(e), "models": []}
 
 
