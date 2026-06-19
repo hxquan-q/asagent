@@ -26,8 +26,10 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="200" fixed="right">
+      <el-table-column label="操作" width="280" fixed="right">
         <template #default="{ row }">
+          <el-button text type="success" :loading="testingId === row.id" @click="onTest(row)">测试</el-button>
+          <el-button text type="info" :loading="fetchingId === row.id" @click="onFetchModels(row)">模型列表</el-button>
           <el-button v-if="!row.is_default" text type="warning" @click="onSetDefault(row)">设默认</el-button>
           <el-button text type="primary" @click="openEdit(row)">编辑</el-button>
           <el-button text type="danger" @click="onRemove(row)">删除</el-button>
@@ -47,7 +49,23 @@
           </el-select>
         </el-form-item>
         <el-form-item label="模型名" required>
-          <el-input v-model="form.model_name" placeholder="如 gpt-4o-mini" />
+          <div style="display: flex; gap: 8px; width: 100%">
+            <el-select
+              v-model="form.model_name"
+              filterable
+              allow-create
+              default-first-option
+              :placeholder="availableModels.length ? '选择或输入模型' : '如 gpt-4o-mini'"
+              style="flex: 1"
+            >
+              <el-option v-for="m in availableModels" :key="m" :label="m" :value="m" />
+            </el-select>
+            <el-button
+              v-if="dialog.id"
+              :loading="fetchingId === dialog.id"
+              @click="onFetchModelsInDialog"
+            >获取模型</el-button>
+          </div>
         </el-form-item>
         <el-form-item label="API Base URL">
           <el-input v-model="form.api_base_url" placeholder="可选，留空使用默认" />
@@ -75,7 +93,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { llmApi } from '../api'
 import AppIcon from '../components/AppIcon.vue'
@@ -86,6 +104,9 @@ const providers = ref([])
 const defaultsMap = ref({})
 const loading = ref(false)
 const saving = ref(false)
+const testingId = ref(null)
+const fetchingId = ref(null)
+const availableModels = ref([])
 const dialog = reactive({ visible: false, id: null })
 const form = reactive({
   name: '',
@@ -129,6 +150,7 @@ function resetForm() {
     enabled: true
   })
   additionalParamsText.value = '{}'
+  availableModels.value = []
   dialog.id = null
 }
 function openCreate() {
@@ -206,6 +228,72 @@ async function onRemove(row) {
   await llmApi.remove(row.id)
   ElMessage.success('已删除')
   await load()
+}
+
+async function onTest(row) {
+  testingId.value = row.id
+  try {
+    const res = await llmApi.test(row.id)
+    if (res.ok) {
+      ElMessage.success(`连接成功！回复: ${res.reply}`)
+    } else {
+      ElMessage.error(`测试失败: ${res.error}`)
+    }
+  } catch (e) {
+    ElMessage.error('请求失败')
+  } finally {
+    testingId.value = null
+  }
+}
+
+async function onFetchModels(row) {
+  fetchingId.value = row.id
+  try {
+    const res = await llmApi.fetchModels(row.id)
+    if (res.ok && res.models.length) {
+      ElMessageBox.alert(
+        res.models.map((m) => `• ${m}`).join('\n'),
+        `${row.name} 可用模型 (${res.models.length})`,
+        { confirmButtonText: '确定', customStyle: { whiteSpace: 'pre-wrap', fontFamily: 'var(--font-mono)' } }
+      )
+    } else if (res.ok) {
+      ElMessage.info('该端点未返回模型列表')
+    } else {
+      ElMessage.error(`获取失败: ${res.error}`)
+    }
+  } catch (e) {
+    ElMessage.error('请求失败')
+  } finally {
+    fetchingId.value = null
+  }
+}
+
+async function onFetchModelsInDialog() {
+  if (!dialog.id) return
+  fetchingId.value = dialog.id
+  try {
+    const res = await llmApi.fetchModels(dialog.id)
+    if (res.ok && res.models.length) {
+      const currentModel = form.model_name
+      // Ensure current model is in the list so el-select can display it
+      if (currentModel && !res.models.includes(currentModel)) {
+        availableModels.value = [currentModel, ...res.models]
+      } else {
+        availableModels.value = res.models
+      }
+      // Force re-assignment to trigger el-select reactivity
+      nextTick(() => { form.model_name = currentModel })
+      ElMessage.success(`获取到 ${res.models.length} 个模型`)
+    } else if (res.ok) {
+      ElMessage.info('该端点未返回模型列表')
+    } else {
+      ElMessage.error(`获取失败: ${res.error}`)
+    }
+  } catch (e) {
+    ElMessage.error('请求失败')
+  } finally {
+    fetchingId.value = null
+  }
 }
 
 onMounted(load)

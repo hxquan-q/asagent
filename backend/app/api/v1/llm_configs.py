@@ -108,6 +108,61 @@ def update_config(
     return row
 
 
+@router.post("/{cfg_id}/test")
+def test_config(
+    cfg_id: int,
+    admin: User = Depends(require_admin),  # noqa: ARG001
+    session: Session = Depends(get_session),
+) -> dict:
+    """Send a minimal chat completion to verify the config works end-to-end."""
+    from ...llm import build_from_orm, create_llm
+
+    row = session.get(LlmConfig, cfg_id)
+    if row is None:
+        raise HTTPException(404, "llm_config not found")
+    try:
+        cfg = build_from_orm(row)
+        llm = create_llm(cfg)
+        resp = llm.invoke("Reply with exactly: ok")
+        content = resp.content if hasattr(resp, "content") else str(resp)
+        return {"ok": True, "reply": content[:200]}
+    except Exception as e:
+        return {"ok": False, "error": f"{type(e).__name__}: {e}"}
+
+
+@router.post("/{cfg_id}/models")
+def fetch_models(
+    cfg_id: int,
+    admin: User = Depends(require_admin),  # noqa: ARG001
+    session: Session = Depends(get_session),
+) -> dict:
+    """Fetch available models from the provider's /models endpoint."""
+    import httpx
+
+    row = session.get(LlmConfig, cfg_id)
+    if row is None:
+        raise HTTPException(404, "llm_config not found")
+
+    api_key = settings.decrypt(row.api_key_encrypted)
+    base_url = (row.api_base_url or PROVIDER_DEFAULTS.get(row.provider, "")).rstrip("/")
+    if not base_url:
+        return {"ok": False, "error": "未配置 API Base URL", "models": []}
+
+    try:
+        resp = httpx.get(
+            f"{base_url}/models",
+            headers={"Authorization": f"Bearer {api_key}"} if api_key else {},
+            timeout=15,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        models = [m.get("id") or m.get("name") for m in data.get("data", data.get("models", []))]
+        models = sorted([m for m in models if m])
+        return {"ok": True, "models": models}
+    except Exception as e:
+        return {"ok": False, "error": f"{type(e).__name__}: {e}", "models": []}
+
+
 @router.delete("/{cfg_id}")
 def delete_config(
     cfg_id: int,

@@ -10,7 +10,9 @@ export const llmApi = {
   create: (body) => http.post('/api/v1/llm_configs', body).then((r) => r.data),
   update: (id, body) => http.put(`/api/v1/llm_configs/${id}`, body).then((r) => r.data),
   remove: (id) => http.delete(`/api/v1/llm_configs/${id}`).then((r) => r.data),
-  providers: () => http.get('/api/v1/llm_configs/providers').then((r) => r.data)
+  providers: () => http.get('/api/v1/llm_configs/providers').then((r) => r.data),
+  test: (id) => http.post(`/api/v1/llm_configs/${id}/test`).then((r) => r.data),
+  fetchModels: (id) => http.post(`/api/v1/llm_configs/${id}/models`).then((r) => r.data)
 }
 
 export const datasourceApi = {
