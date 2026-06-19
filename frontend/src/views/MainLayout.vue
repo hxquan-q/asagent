@@ -296,4 +296,26 @@ function onUserCmd(cmd) {
   min-height: 0;
   overflow: auto;
 }
+
+/* responsive: collapse rail on tablets, hide on phones */
+@media (max-width: 900px) {
+  .rail {
+    width: 52px;
+  }
+  .rail-item {
+    width: 40px;
+    height: 40px;
+  }
+  .topbar-eyebrow {
+    display: none;
+  }
+}
+@media (max-width: 600px) {
+  .rail {
+    display: none;
+  }
+  .topbar {
+    padding: 0 14px;
+  }
+}
 </style>

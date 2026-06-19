@@ -360,4 +360,16 @@ watch(() => chat.messages.length, () => scrollToBottom())
   max-width: 820px;
   margin: 0 auto;
 }
+
+/* responsive: hide side panels on narrow viewports */
+@media (max-width: 900px) {
+  .workspace :deep(.canvas) {
+    display: none;
+  }
+}
+@media (max-width: 700px) {
+  .workspace :deep(aside.rail) {
+    display: none;
+  }
+}
 </style>

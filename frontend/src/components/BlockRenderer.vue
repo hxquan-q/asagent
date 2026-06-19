@@ -59,7 +59,7 @@
     <template v-else-if="block.type === 'file'">
       <div class="file-block">
         <el-link type="primary" :href="block.url" target="_blank" :underline="false">
-          <el-icon><Document /></el-icon>
+          <AppIcon name="file" :size="14" />
           <span class="file-name">{{ block.filename }}</span>
           <span v-if="block.size" class="file-size">({{ humanSize(block.size) }})</span>
         </el-link>
