@@ -1,19 +1,22 @@
 <template>
-  <div class="page-card">
-    <div class="toolbar">
-      <h3 class="page-title">API Key 管理</h3>
-      <el-button type="primary" @click="openCreate">新建 API Key</el-button>
-    </div>
+  <div class="page">
+   <div class="page-narrow">
+    <PageHeader title="API Key" subtitle="外部程序通过 API Key 直接调用对话接口" icon="key">
+      <template #actions>
+        <el-button type="primary" @click="openCreate"><AppIcon name="plus" :size="14" />&nbsp;新建 API Key</el-button>
+      </template>
+    </PageHeader>
 
+    <div class="page-body">
     <el-alert
-      class="tip"
       title="完整密钥仅在创建时显示一次，请立即复制保存。"
       type="warning"
       :closable="false"
       show-icon
+      style="margin: 8px 6px 10px"
     />
 
-    <el-table :data="list" v-loading="loading" border stripe style="margin-top: 12px">
+    <el-table :data="list" v-loading="loading" border stripe>
       <el-table-column prop="name" label="名称" min-width="140" />
       <el-table-column prop="key_prefix" label="Key 前缀" min-width="120">
         <template #default="{ row }">
@@ -32,6 +35,7 @@
         </template>
       </el-table-column>
     </el-table>
+    </div>
 
     <el-dialog v-model="dialog.visible" title="新建 API Key" width="480px">
       <el-form :model="form" label-width="100px">
@@ -69,6 +73,7 @@
         <el-button @click="resultDialog.visible = false">关闭</el-button>
       </template>
     </el-dialog>
+   </div>
   </div>
 </template>
 
@@ -76,6 +81,8 @@
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { apiKeyApi } from '../api'
+import AppIcon from '../components/AppIcon.vue'
+import PageHeader from '../components/PageHeader.vue'
 
 const list = ref([])
 const loading = ref(false)
@@ -144,31 +151,16 @@ onMounted(load)
 </script>
 
 <style scoped>
-.page-card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 16px;
-  height: 100%;
-  overflow: auto;
-}
-.toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-.page-title {
-  margin: 0;
-}
 .key-box {
   margin: 14px 0;
-  padding: 12px;
-  background: #f5f7fa;
-  border: 1px dashed #dcdfe6;
-  border-radius: 6px;
+  padding: 14px;
+  background: var(--surface-2);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--r-md);
   word-break: break-all;
 }
 .key-box code {
-  font-size: 14px;
+  font-size: var(--fs-base);
+  color: var(--primary-strong);
 }
 </style>

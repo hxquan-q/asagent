@@ -11,13 +11,14 @@ const routes = [
   {
     path: '/',
     component: () => import('../views/MainLayout.vue'),
-    redirect: '/chat',
+    redirect: '/dashboard',
     children: [
-      { path: 'chat', name: 'chat', component: () => import('../views/Chat.vue'), meta: { title: '对话' } },
-      { path: 'agents', name: 'agents', component: () => import('../views/Agents.vue'), meta: { title: 'Agent' } },
+      { path: 'dashboard', name: 'dashboard', component: () => import('../views/Dashboard.vue'), meta: { title: '概览' } },
+      { path: 'chat', name: 'chat', component: () => import('../views/Chat.vue'), meta: { title: '工作台' } },
+      { path: 'agents', name: 'agents', component: () => import('../views/Agents.vue'), meta: { title: '智能体' } },
       { path: 'datasources', name: 'datasources', component: () => import('../views/Datasources.vue'), meta: { title: '数据源' } },
       { path: 'llm', name: 'llm', component: () => import('../views/LLMConfigs.vue'), meta: { title: 'LLM 配置' } },
-      { path: 'skills', name: 'skills', component: () => import('../views/Skills.vue'), meta: { title: 'Skills' } },
+      { path: 'skills', name: 'skills', component: () => import('../views/Skills.vue'), meta: { title: '技能' } },
       { path: 'apikeys', name: 'apikeys', component: () => import('../views/ApiKeys.vue'), meta: { title: 'API Key' } }
     ]
   },
@@ -36,7 +37,7 @@ router.beforeEach((to) => {
     return { name: 'login', query: { redirect: to.fullPath } }
   }
   if (to.name === 'login' && auth.token) {
-    return { name: 'chat' }
+    return { name: 'dashboard' }
   }
 })
 

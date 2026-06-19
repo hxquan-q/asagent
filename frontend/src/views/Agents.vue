@@ -1,10 +1,15 @@
 <template>
-  <div class="page-card">
-    <div class="toolbar">
-      <h3 class="page-title">Agent 管理</h3>
-      <el-button type="primary" @click="openCreate">新建 Agent</el-button>
-    </div>
+  <div class="page">
+   <div class="page-narrow">
+    <PageHeader title="智能体" subtitle="为每个 Agent 绑定模型、数据源与技能" icon="robot">
+      <template #actions>
+        <el-button type="primary" @click="openCreate">
+          <AppIcon name="plus" :size="14" />&nbsp;新建 Agent
+        </el-button>
+      </template>
+    </PageHeader>
 
+    <div class="page-body">
     <el-table :data="list" v-loading="loading" border stripe>
       <el-table-column prop="name" label="名称" min-width="120" />
       <el-table-column prop="description" label="描述" min-width="160" show-overflow-tooltip />
@@ -30,6 +35,7 @@
         </template>
       </el-table-column>
     </el-table>
+    </div>
 
     <el-dialog v-model="dialog.visible" :title="dialog.id ? '编辑 Agent' : '新建 Agent'" width="640px">
       <el-form :model="form" label-width="110px">
@@ -67,6 +73,7 @@
         <el-button type="primary" :loading="saving" @click="onSave">保存</el-button>
       </template>
     </el-dialog>
+   </div>
   </div>
 </template>
 
@@ -74,6 +81,8 @@
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { agentApi, datasourceApi, llmApi, skillApi } from '../api'
+import AppIcon from '../components/AppIcon.vue'
+import PageHeader from '../components/PageHeader.vue'
 
 const list = ref([])
 const llms = ref([])
@@ -191,22 +200,6 @@ onMounted(loadAll)
 </script>
 
 <style scoped>
-.page-card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 16px;
-  height: 100%;
-  overflow: auto;
-}
-.toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-.page-title {
-  margin: 0;
-}
 .tag {
   margin: 2px 4px 2px 0;
 }

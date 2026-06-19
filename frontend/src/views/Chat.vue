@@ -1,277 +1,363 @@
 <template>
-  <div class="chat-page">
-    <div class="chat-header">
-      <span class="label">选择 Agent:</span>
-      <el-select
-        v-model="agentId"
-        placeholder="请选择 Agent"
-        style="width: 280px"
-        @change="onAgentChange"
-      >
-        <el-option
-          v-for="a in agents"
-          :key="a.id"
-          :label="a.name"
-          :value="a.id"
-        />
-      </el-select>
-      <el-button text @click="newConversation">新对话</el-button>
-    </div>
+  <div class="workspace">
+    <ConversationRail />
 
-    <div ref="messagesEl" class="messages">
-      <el-empty v-if="messages.length === 0" description="开始与 Agent 对话" />
-      <div
-        v-for="(msg, i) in messages"
-        :key="i"
-        class="msg-row"
-        :class="msg.role === 'user' ? 'msg-user' : 'msg-assistant'"
-      >
-        <div class="avatar" :class="msg.role">
-          {{ msg.role === 'user' ? '我' : 'A' }}
+    <section class="thread-col">
+      <header class="thread-head">
+        <div class="th-left">
+          <div class="th-agent-icon"><AppIcon name="robot" :size="16" /></div>
+          <div>
+            <div class="th-name">{{ agent?.name || '未选择 Agent' }}</div>
+            <div class="th-sub">{{ agent?.description || '选择一个 Agent 开始对话' }}</div>
+          </div>
         </div>
-        <div class="bubble">
-          <div v-if="msg.text" class="md-body" v-html="renderMarkdown(msg.text)"></div>
-          <div v-if="msg.blocks && msg.blocks.length" class="blocks">
-            <BlockRenderer
-              v-for="(b, bi) in msg.blocks"
-              :key="bi"
-              :block="b"
-            />
-          </div>
-          <div v-if="msg.error" class="msg-error">{{ msg.error }}</div>
-          <div v-if="msg.streaming" class="typing">
-            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-          </div>
+        <div class="th-right">
+          <button
+            class="canvas-toggle"
+            :class="{ on: ui.canvasOpen, has: chat.hasArtifacts }"
+            :title="ui.canvasOpen ? '隐藏画布' : '显示画布'"
+            @click="ui.toggleCanvas()"
+          >
+            <AppIcon name="panelRight" :size="16" />
+            <span v-if="chat.hasArtifacts" class="ct-badge">{{ chat.artifacts.length }}</span>
+          </button>
+        </div>
+      </header>
+
+      <div ref="scrollEl" class="thread-scroll">
+        <!-- empty hero -->
+        <div v-if="!chat.messages.length && !chat.loadingConversation" class="hero">
+          <template v-if="chat.agents.length">
+            <div class="hero-mark"><AppIcon name="sparkles" :size="26" /></div>
+            <h2 class="hero-title">向 <span>{{ agent?.name }}</span> 提问</h2>
+            <p class="hero-sub">
+              {{ agent?.description || '基于你的业务数据进行分析、可视化与总结。' }}
+            </p>
+            <div class="suggest">
+              <button v-for="s in suggestions" :key="s" class="suggest-chip" @click="quickSend(s)">
+                <AppIcon name="bolt" :size="13" />
+                <span>{{ s }}</span>
+              </button>
+            </div>
+          </template>
+          <template v-else>
+            <div class="hero-mark"><AppIcon name="robot" :size="26" /></div>
+            <h2 class="hero-title">还没有可用的 Agent</h2>
+            <p class="hero-sub">先创建一个 Agent 并绑定 LLM 与数据源，再回到这里对话。</p>
+            <router-link v-if="auth.isAdmin" to="/agents" class="hero-cta">
+              <AppIcon name="plus" :size="15" /> 创建 Agent
+            </router-link>
+          </template>
+        </div>
+
+        <!-- loading -->
+        <div v-else-if="chat.loadingConversation" class="hero">
+          <div class="hero-mark"><span class="spinner-lg"></span></div>
+          <p class="hero-sub">加载对话…</p>
+        </div>
+
+        <!-- messages -->
+        <div v-else class="thread-inner">
+          <MessageItem
+            v-for="(m, i) in chat.messages"
+            :key="i"
+            :message="m"
+            :agent-name="agent?.name"
+            @focus-block="onFocusBlock"
+          />
         </div>
       </div>
-    </div>
 
-    <div class="composer">
-      <el-input
-        v-model="input"
-        type="textarea"
-        :rows="2"
-        :disabled="!agentId || sending"
-        resize="none"
-        placeholder="输入消息，Enter 发送，Shift+Enter 换行"
-        @keydown.enter.exact.prevent="onSend"
-      />
-      <el-button
-        type="primary"
-        :loading="sending"
-        :disabled="!agentId || !input.trim()"
-        @click="onSend"
-      >
-        发送
-      </el-button>
-    </div>
+      <div class="thread-foot">
+        <div class="composer-wrap">
+          <Composer />
+        </div>
+      </div>
+    </section>
+
+    <ArtifactCanvas v-if="ui.canvasOpen" />
   </div>
 </template>
 
 <script setup>
-import { nextTick, onMounted, reactive, ref } from 'vue'
-import { ElMessage } from 'element-plus'
-import { agentApi, chatStream } from '../api'
-import { renderMarkdown } from '../utils/markdown'
-import BlockRenderer from '../components/BlockRenderer.vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { useChatStore } from '../stores/chat'
+import { useUiStore } from '../stores/ui'
+import { useAuthStore } from '../stores/auth'
+import AppIcon from '../components/AppIcon.vue'
+import ConversationRail from '../components/chat/ConversationRail.vue'
+import MessageItem from '../components/chat/MessageItem.vue'
+import Composer from '../components/chat/Composer.vue'
+import ArtifactCanvas from '../components/chat/ArtifactCanvas.vue'
 
-const agents = ref([])
-const agentId = ref(null)
-const messages = ref([])
-const input = ref('')
-const sending = ref(false)
-const conversationId = ref(null)
-const messagesEl = ref(null)
+const chat = useChatStore()
+const ui = useUiStore()
+const auth = useAuthStore()
+
+const scrollEl = ref(null)
+const agent = computed(() => chat.currentAgent)
+
+const suggestions = [
+  '统计每个状态的订单数量',
+  '查询库存最高的 10 个 SKU',
+  '用柱状图展示近 30 天销售趋势',
+  '画出核心业务的流程图'
+]
 
 onMounted(async () => {
-  try {
-    const list = await agentApi.list()
-    agents.value = Array.isArray(list) ? list : list.items || []
-    if (agents.value.length && !agentId.value) {
-      agentId.value = agents.value[0].id
-    }
-  } catch (e) {
-    // handled by interceptor
-  }
+  await chat.loadAgents()
+  await chat.loadConversations()
+  ui.canvasOpen = true
 })
 
-function onAgentChange() {
-  conversationId.value = null
+async function quickSend(text) {
+  await chat.send(text)
 }
 
-function newConversation() {
-  messages.value = []
-  conversationId.value = null
-}
-
-async function scrollBottom() {
-  await nextTick()
-  if (messagesEl.value) {
-    messagesEl.value.scrollTop = messagesEl.value.scrollHeight
+function onFocusBlock(block) {
+  if (chat.focusBlock(block)) {
+    ui.canvasOpen = true
   }
 }
 
-async function onSend() {
-  if (!agentId.value) {
-    ElMessage.warning('请先选择 Agent')
-    return
-  }
-  const text = input.value.trim()
-  if (!text) return
-  messages.value.push({ role: 'user', text })
-  input.value = ''
-  await scrollBottom()
-
-  const assistantMsg = reactive({ role: 'assistant', text: '', blocks: [], streaming: true, error: '' })
-  messages.value.push(assistantMsg)
-  await scrollBottom()
-
-  sending.value = true
-  try {
-    await chatStream({
-      agentId: agentId.value,
-      message: text,
-      conversationId: conversationId.value,
-      onEvent: (evt) => handleEvent(assistantMsg, evt)
-    })
-  } catch (e) {
-    assistantMsg.error = assistantMsg.error || (e && e.message) || '请求失败'
-  } finally {
-    assistantMsg.streaming = false
-    sending.value = false
-    await scrollBottom()
-  }
+function scrollToBottom() {
+  nextTick(() => {
+    const el = scrollEl.value
+    if (el) el.scrollTop = el.scrollHeight
+  })
 }
 
-function handleEvent(msg, evt) {
-  if (!evt || !evt.type) return
-  switch (evt.type) {
-    case 'conversation':
-      conversationId.value = evt.conversation_id
-      break
-    case 'token':
-      msg.text = (msg.text || '') + (evt.content || '')
-      scrollBottom()
-      break
-    case 'tool_start':
-      msg.text = (msg.text || '') + `\n\n> 调用工具: **${evt.name}**\n`
-      break
-    case 'tool_end':
-      msg.text = (msg.text || '') + `\n> 工具完成: **${evt.name}**\n\n`
-      break
-    case 'block':
-      if (evt.block) msg.blocks.push(evt.block)
-      break
-    case 'error':
-      msg.error = evt.content || '服务返回错误'
-      break
-    case 'done':
-      break
-    default:
-      break
-  }
-}
+watch(
+  () => chat.messages,
+  () => scrollToBottom(),
+  { deep: true }
+)
+watch(() => chat.messages.length, () => scrollToBottom())
 </script>
 
 <style scoped>
-.chat-page {
+.workspace {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  position: relative;
+}
+
+/* thread column */
+.thread-col {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  background: #fff;
-  border-radius: 8px;
-  overflow: hidden;
+  background: var(--bg);
 }
-.chat-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  border-bottom: 1px solid #ebeef5;
-}
-.label {
-  font-size: 13px;
-  color: #606266;
-}
-.messages {
-  flex: 1;
-  overflow: auto;
-  padding: 16px;
-}
-.msg-row {
-  display: flex;
-  margin-bottom: 16px;
-  gap: 10px;
-}
-.msg-user {
-  flex-direction: row-reverse;
-}
-.avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
+.thread-head {
+  height: 56px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
+  backdrop-filter: blur(8px);
+}
+.th-left {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+.th-agent-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  color: #fff;
-  font-size: 14px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+  flex-shrink: 0;
+}
+.th-name {
+  font-weight: 600;
+  font-size: var(--fs-base);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.th-sub {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 50vw;
+}
+.th-right {
+  display: flex;
+  gap: 8px;
+}
+.canvas-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+.canvas-toggle:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+.canvas-toggle.on {
+  color: var(--primary-strong);
+  border-color: var(--primary-line);
+  background: var(--primary-soft);
+}
+.ct-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  color: #2a1c05;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thread-scroll {
+  flex: 1;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+.thread-inner {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 22px 24px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* hero / empty state */
+.hero {
+  height: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 24px;
+  gap: 6px;
+}
+.hero-mark {
+  width: 60px;
+  height: 60px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(140deg, var(--primary-strong), var(--primary));
+  color: #06281c;
+  margin-bottom: 10px;
+  box-shadow: 0 10px 30px var(--primary-soft);
+}
+.hero-title {
+  margin: 0;
+  font-size: var(--fs-2xl);
   font-weight: 600;
 }
-.avatar.user {
-  background: #67c23a;
+.hero-title span {
+  color: var(--primary-strong);
 }
-.avatar.assistant {
-  background: #409eff;
+.hero-sub {
+  margin: 4px 0 18px;
+  color: var(--text-muted);
+  font-size: var(--fs-base);
+  line-height: 1.6;
+  max-width: 460px;
 }
-.bubble {
-  max-width: 78%;
-  padding: 10px 14px;
-  border-radius: 8px;
-  background: #f5f7fa;
-  word-break: break-word;
-}
-.msg-user .bubble {
-  background: #ecf5ff;
-}
-.blocks {
-  margin-top: 8px;
-}
-.msg-error {
-  color: #f56c6c;
-  font-size: 13px;
-  margin-top: 6px;
-}
-.composer {
+.suggest {
   display: flex;
-  gap: 10px;
-  padding: 12px 16px;
-  border-top: 1px solid #ebeef5;
-  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 9px;
+  justify-content: center;
+  max-width: 560px;
 }
-.typing .dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
+.suggest-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 14px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+.suggest-chip:hover {
+  border-color: var(--primary-line);
+  background: var(--primary-soft);
+  color: var(--primary-strong);
+  transform: translateY(-1px);
+}
+.suggest-chip :deep(svg) {
+  color: var(--accent);
+}
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 10px;
+  padding: 10px 18px;
+  border-radius: var(--r-sm);
+  background: var(--primary);
+  color: #06281c;
+  font-weight: 600;
+  text-decoration: none;
+}
+.hero-cta:hover {
+  background: var(--primary-strong);
+  text-decoration: none;
+}
+.spinner-lg {
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  background: #909399;
-  margin: 0 2px;
-  animation: blink 1.2s infinite ease-in-out both;
+  border: 3px solid var(--primary-soft);
+  border-top-color: var(--primary);
+  animation: spin 0.8s linear infinite;
 }
-.typing .dot:nth-child(2) {
-  animation-delay: 0.2s;
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
-.typing .dot:nth-child(3) {
-  animation-delay: 0.4s;
+
+.thread-foot {
+  flex-shrink: 0;
+  padding: 0 24px 16px;
+  background: linear-gradient(to top, var(--bg) 60%, transparent);
 }
-@keyframes blink {
-  0%,
-  80%,
-  100% {
-    opacity: 0.2;
-  }
-  40% {
-    opacity: 1;
-  }
+.composer-wrap {
+  max-width: 820px;
+  margin: 0 auto;
 }
 </style>

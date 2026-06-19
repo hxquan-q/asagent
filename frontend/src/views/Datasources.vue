@@ -1,10 +1,13 @@
 <template>
-  <div class="page-card">
-    <div class="toolbar">
-      <h3 class="page-title">数据源管理</h3>
-      <el-button type="primary" @click="openCreate">新建数据源</el-button>
-    </div>
+  <div class="page">
+   <div class="page-narrow">
+    <PageHeader title="数据源" subtitle="以只读方式接入业务数据库（PostgreSQL）" icon="database">
+      <template #actions>
+        <el-button type="primary" @click="openCreate"><AppIcon name="plus" :size="14" />&nbsp;新建数据源</el-button>
+      </template>
+    </PageHeader>
 
+    <div class="page-body">
     <el-table :data="list" v-loading="loading" border stripe>
       <el-table-column prop="name" label="名称" min-width="120" />
       <el-table-column prop="type" label="类型" width="100" />
@@ -29,6 +32,7 @@
         </template>
       </el-table-column>
     </el-table>
+    </div>
 
     <el-dialog v-model="dialog.visible" :title="dialog.id ? '编辑数据源' : '新建数据源'" width="560px">
       <el-form :model="form" label-width="100px">
@@ -64,6 +68,7 @@
         <el-button type="primary" :loading="saving" @click="onSave">保存</el-button>
       </template>
     </el-dialog>
+   </div>
   </div>
 </template>
 
@@ -71,6 +76,8 @@
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { datasourceApi } from '../api'
+import AppIcon from '../components/AppIcon.vue'
+import PageHeader from '../components/PageHeader.vue'
 
 const list = ref([])
 const loading = ref(false)
@@ -196,20 +203,4 @@ onMounted(load)
 </script>
 
 <style scoped>
-.page-card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 16px;
-  height: 100%;
-  overflow: auto;
-}
-.toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-.page-title {
-  margin: 0;
-}
 </style>

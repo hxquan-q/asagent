@@ -8,7 +8,7 @@ from pydantic import BaseModel, ConfigDict
 from sqlmodel import Session, select
 
 from ...core.db import get_session
-from ...core.deps import require_admin
+from ...core.deps import Principal, get_principal, require_admin
 from ...models import Agent, User
 
 router = APIRouter(prefix="/agents", tags=["agents"])
@@ -50,7 +50,7 @@ def _apply(row: Agent, body: AgentIn) -> None:
 
 @router.get("", response_model=list[AgentOut])
 def list_agents(
-    admin: User = Depends(require_admin),  # noqa: ARG001
+    principal: Principal = Depends(get_principal),  # noqa: ARG001 — any authed caller can list agents (chat picker)
     session: Session = Depends(get_session),
 ) -> list[Agent]:
     return session.exec(select(Agent).order_by(Agent.created_at.desc())).all()

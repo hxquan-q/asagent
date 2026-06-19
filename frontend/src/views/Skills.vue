@@ -1,19 +1,20 @@
 <template>
-  <div class="page-card">
-    <div class="toolbar">
-      <h3 class="page-title">Skills 管理</h3>
-      <div class="toolbar-right">
+  <div class="page">
+   <div class="page-narrow">
+    <PageHeader title="技能" subtitle="Anthropic Agent Skills — 上传 zip 即可热加载、沙箱执行" icon="sparkles">
+      <template #actions>
         <el-checkbox v-model="overwrite">覆盖已存在</el-checkbox>
         <el-upload
           :show-file-list="false"
           :before-upload="onUpload"
           accept=".zip"
         >
-          <el-button type="primary">上传 Skill (zip)</el-button>
+          <el-button type="primary"><AppIcon name="plus" :size="14" />&nbsp;上传 Skill (zip)</el-button>
         </el-upload>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
+    <div class="page-body">
     <el-table :data="list" v-loading="loading" border stripe>
       <el-table-column prop="name" label="名称" min-width="140" />
       <el-table-column prop="description" label="描述" min-width="220" show-overflow-tooltip />
@@ -33,6 +34,7 @@
         </template>
       </el-table-column>
     </el-table>
+    </div>
 
     <el-dialog v-model="mdDialog.visible" :title="`SKILL.md - ${mdDialog.name}`" width="720px">
       <pre class="md-pre">{{ mdDialog.content }}</pre>
@@ -40,6 +42,7 @@
         <el-button @click="mdDialog.visible = false">关闭</el-button>
       </template>
     </el-dialog>
+   </div>
   </div>
 </template>
 
@@ -47,6 +50,8 @@
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { skillApi } from '../api'
+import AppIcon from '../components/AppIcon.vue'
+import PageHeader from '../components/PageHeader.vue'
 
 const list = ref([])
 const loading = ref(false)
@@ -114,35 +119,16 @@ onMounted(load)
 </script>
 
 <style scoped>
-.page-card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 16px;
-  height: 100%;
-  overflow: auto;
-}
-.toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-.toolbar-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.page-title {
-  margin: 0;
-}
 .md-pre {
-  background: #1e1e1e;
-  color: #e6e6e6;
+  background: #0c0f14;
+  color: #e6e8ec;
   padding: 14px;
-  border-radius: 6px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
   max-height: 60vh;
   overflow: auto;
-  font-size: 13px;
+  font-size: var(--fs-sm);
+  line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
 }

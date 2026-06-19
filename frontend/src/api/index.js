@@ -51,6 +51,17 @@ export const apiKeyApi = {
   remove: (id) => http.delete(`/api/v1/apikeys/${id}`).then((r) => r.data)
 }
 
+export const conversationApi = {
+  list: () => http.get('/api/v1/conversations').then((r) => r.data),
+  get: (id) => http.get(`/api/v1/conversations/${id}`).then((r) => r.data),
+  rename: (id, title) => http.patch(`/api/v1/conversations/${id}`, { title }).then((r) => r.data),
+  remove: (id) => http.delete(`/api/v1/conversations/${id}`).then((r) => r.data)
+}
+
+export const statsApi = {
+  overview: () => http.get('/api/v1/stats/overview').then((r) => r.data)
+}
+
 /**
  * Streaming chat via fetch + ReadableStream.
  * onEvent(evt) called for each parsed SSE data object.
@@ -120,6 +131,8 @@ export default {
   agentApi,
   skillApi,
   apiKeyApi,
+  conversationApi,
+  statsApi,
   chatStream,
   chatSync
 }

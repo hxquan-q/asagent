@@ -1,83 +1,120 @@
 <template>
-  <el-container class="layout">
-    <el-aside width="220px" class="aside">
-      <div class="brand">
-        <div class="logo">A</div>
-        <span class="brand-name">Asagent</span>
-      </div>
-      <el-menu
-        :default-active="activeMenu"
-        router
-        class="menu"
-        background-color="#1f2933"
-        text-color="#cfd6dd"
-        active-text-color="#ffffff"
-      >
-        <el-menu-item index="/chat">
-          <el-icon><ChatDotRound /></el-icon>
-          <span>对话</span>
-        </el-menu-item>
-        <el-menu-item index="/agents">
-          <el-icon><User /></el-icon>
-          <span>Agent</span>
-        </el-menu-item>
-        <el-menu-item index="/datasources">
-          <el-icon><Coin /></el-icon>
-          <span>数据源</span>
-        </el-menu-item>
-        <el-menu-item index="/llm">
-          <el-icon><Cpu /></el-icon>
-          <span>LLM 配置</span>
-        </el-menu-item>
-        <el-menu-item index="/skills">
-          <el-icon><Files /></el-icon>
-          <span>Skills</span>
-        </el-menu-item>
-        <el-menu-item index="/apikeys">
-          <el-icon><Key /></el-icon>
-          <span>API Key</span>
-        </el-menu-item>
-      </el-menu>
-    </el-aside>
+  <div class="shell">
+    <!-- icon rail -->
+    <nav class="rail" :class="{ collapsed: ui.railCollapsed }">
+      <router-link to="/chat" class="brand" title="Asagent">
+        <span class="brand-mark">A</span>
+      </router-link>
 
-    <el-container>
-      <el-header class="header">
-        <div class="page-title">{{ currentTitle }}</div>
-        <div class="header-right">
-          <el-tag v-if="auth.isAdmin" type="warning" size="small" effect="plain">管理员</el-tag>
-          <el-dropdown @command="onCommand">
-            <span class="user-trigger">
-              <el-icon><UserFilled /></el-icon>
-              <span class="uname">{{ auth.isAdmin ? 'admin' : 'user' }}</span>
-            </span>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item command="logout">退出登录</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
+      <div class="rail-nav">
+        <router-link
+          v-for="item in navItems"
+          :key="item.path"
+          :to="item.path"
+          class="rail-item"
+          :class="{ active: isActive(item) }"
+          :title="item.label"
+        >
+          <AppIcon :name="item.icon" :size="20" />
+          <span class="rail-label">{{ item.label }}</span>
+        </router-link>
+      </div>
+
+      <div class="rail-foot">
+        <button class="rail-item icon-btn" title="切换主题" @click="ui.toggleTheme()">
+          <AppIcon :name="ui.theme === 'dark' ? 'sun' : 'moon'" :size="20" />
+          <span class="rail-label">{{ ui.theme === 'dark' ? '浅色' : '深色' }}</span>
+        </button>
+
+        <el-dropdown placement="top-start" trigger="click" @command="onUserCmd">
+          <div class="rail-item avatar-item" title="账户">
+            <span class="avatar">{{ initial }}</span>
+            <span class="rail-label">{{ auth.isAdmin ? 'admin' : 'user' }}</span>
+          </div>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item disabled>
+                <span class="mono" style="font-size: 12px">{{ auth.isAdmin ? 'admin' : 'user' }}</span>
+              </el-dropdown-item>
+              <el-dropdown-item divided command="logout">
+                <AppIcon name="logout" :size="15" />&nbsp;退出登录
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </div>
+    </nav>
+
+    <!-- main column -->
+    <div class="main-col">
+      <header class="topbar">
+        <div class="topbar-left">
+          <span class="topbar-eyebrow mono">{{ sectionLabel }}</span>
+          <h1 class="topbar-title">{{ pageTitle }}</h1>
         </div>
-      </el-header>
-      <el-main class="main">
-        <router-view />
-      </el-main>
-    </el-container>
-  </el-container>
+        <div class="topbar-right">
+          <el-tag
+            v-if="auth.isAdmin"
+            type="warning"
+            effect="dark"
+            size="small"
+            round
+            class="admin-chip"
+          >
+            <AppIcon name="key" :size="12" />&nbsp;管理员
+          </el-tag>
+          <router-link to="/chat" class="ghost-btn">
+            <AppIcon name="chat" :size="16" />&nbsp;进入工作台
+          </router-link>
+        </div>
+      </header>
+
+      <main class="content">
+        <router-view v-slot="{ Component }">
+          <component :is="Component" />
+        </router-view>
+      </main>
+    </div>
+  </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import { useUiStore } from '../stores/ui'
+import AppIcon from '../components/AppIcon.vue'
 
 const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
+const ui = useUiStore()
 
-const activeMenu = computed(() => route.path)
-const currentTitle = computed(() => route.meta.title || '控制台')
+const allNav = [
+  { path: '/dashboard', label: '概览', icon: 'grid', section: '总览' },
+  { path: '/chat', label: '工作台', icon: 'chat', section: '对话', public: true },
+  { path: '/agents', label: '智能体', icon: 'robot', section: '配置' },
+  { path: '/datasources', label: '数据源', icon: 'database', section: '配置' },
+  { path: '/llm', label: 'LLM 配置', icon: 'cpu', section: '配置' },
+  { path: '/skills', label: '技能', icon: 'sparkles', section: '配置' },
+  { path: '/apikeys', label: 'API Key', icon: 'key', section: '配置' }
+]
 
-function onCommand(cmd) {
+const navItems = computed(() => allNav.filter((i) => i.public || auth.isAdmin))
+
+const activePath = computed(() => {
+  const top = '/' + (route.path.split('/')[1] || 'chat')
+  return top
+})
+const isActive = (item) => '/' + item.path.split('/')[1] === activePath.value
+
+const current = computed(() => allNav.find((i) => isActive(i)))
+const pageTitle = computed(() => route.meta.title || current.value?.label || 'Asagent')
+const sectionLabel = computed(() => current.value?.section || 'Asagent')
+
+const initial = computed(() => (auth.isAdmin ? 'A' : 'U'))
+
+function onUserCmd(cmd) {
   if (cmd === 'logout') {
     auth.logout()
     router.push({ name: 'login' })
@@ -86,69 +123,177 @@ function onCommand(cmd) {
 </script>
 
 <style scoped>
-.layout {
+.shell {
+  display: flex;
   height: 100vh;
-}
-.aside {
-  background: #1f2933;
-  color: #fff;
   overflow: hidden;
 }
-.brand {
-  height: 60px;
+
+/* ---------- icon rail ---------- */
+.rail {
+  width: 64px;
+  flex-shrink: 0;
   display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 18px;
-  color: #fff;
-  font-size: 18px;
-  font-weight: 700;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-direction: column;
+  align-items: stretch;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 12px 0 10px;
+  z-index: 10;
 }
-.logo {
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
-  background: #409eff;
-  color: #fff;
+.brand {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+.brand-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: var(--font-display);
   font-weight: 700;
+  font-size: 18px;
+  color: #06281c;
+  background: linear-gradient(140deg, var(--primary-strong), var(--primary));
+  box-shadow: 0 6px 16px var(--primary-soft);
 }
-.menu {
-  border-right: none;
+.rail-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  flex: 1;
 }
-.header {
-  background: #fff;
-  border-bottom: 1px solid #ebeef5;
+.rail-foot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+}
+.rail-item {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  transition: all var(--dur) var(--ease);
+}
+.rail-item:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+.rail-item.active {
+  color: var(--primary-strong);
+  background: var(--primary-soft);
+}
+.rail-item.active::before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  border-radius: 0 3px 3px 0;
+  background: var(--primary);
+}
+.rail-label {
+  display: none;
+}
+.avatar-item {
+  background: var(--surface-2);
+}
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #2a1c05;
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.icon-btn {
+  font-family: inherit;
+}
+
+/* ---------- main column ---------- */
+.main-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+.topbar {
+  height: 60px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  backdrop-filter: blur(10px);
 }
-.page-title {
-  font-size: 16px;
+.topbar-left {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.topbar-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.topbar-title {
+  margin: 0;
+  font-size: var(--fs-lg);
   font-weight: 600;
 }
-.header-right {
+.topbar-right {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
-.user-trigger {
+.admin-chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  outline: none;
 }
-.uname {
-  font-size: 14px;
+.ghost-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 13px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  transition: all var(--dur) var(--ease);
 }
-.main {
-  padding: 16px;
-  background: var(--asagent-bg);
+.ghost-btn:hover {
+  border-color: var(--primary-line);
+  color: var(--primary-strong);
+  text-decoration: none;
+  background: var(--primary-soft);
+}
+.content {
+  flex: 1;
+  min-height: 0;
   overflow: auto;
 }
 </style>

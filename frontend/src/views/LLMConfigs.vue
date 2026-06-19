@@ -1,10 +1,13 @@
 <template>
-  <div class="page-card">
-    <div class="toolbar">
-      <h3 class="page-title">LLM 配置</h3>
-      <el-button type="primary" @click="openCreate">新建配置</el-button>
-    </div>
+  <div class="page">
+   <div class="page-narrow">
+    <PageHeader title="LLM 配置" subtitle="多供应商模型接入（OpenAI / DeepSeek / 通义 / Ollama …）" icon="cpu">
+      <template #actions>
+        <el-button type="primary" @click="openCreate"><AppIcon name="plus" :size="14" />&nbsp;新建配置</el-button>
+      </template>
+    </PageHeader>
 
+    <div class="page-body">
     <el-table :data="list" v-loading="loading" border stripe>
       <el-table-column prop="name" label="名称" min-width="120" />
       <el-table-column prop="provider" label="Provider" width="120" />
@@ -31,6 +34,7 @@
         </template>
       </el-table-column>
     </el-table>
+    </div>
 
     <el-dialog v-model="dialog.visible" :title="dialog.id ? '编辑配置' : '新建配置'" width="560px">
       <el-form :model="form" label-width="110px">
@@ -66,6 +70,7 @@
         <el-button type="primary" :loading="saving" @click="onSave">保存</el-button>
       </template>
     </el-dialog>
+   </div>
   </div>
 </template>
 
@@ -73,6 +78,8 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { llmApi } from '../api'
+import AppIcon from '../components/AppIcon.vue'
+import PageHeader from '../components/PageHeader.vue'
 
 const list = ref([])
 const providers = ref([])
@@ -205,20 +212,4 @@ onMounted(load)
 </script>
 
 <style scoped>
-.page-card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 16px;
-  height: 100%;
-  overflow: auto;
-}
-.toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-.page-title {
-  margin: 0;
-}
 </style>
