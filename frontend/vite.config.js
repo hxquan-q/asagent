@@ -14,6 +14,17 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()]
     })
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'element-plus': ['element-plus'],
+          'echarts': ['echarts'],
+          'mermaid': ['mermaid']
+        }
+      }
+    }
+  },
   server: {
     port: 5173,
     host: true,
