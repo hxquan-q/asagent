@@ -86,10 +86,18 @@
 
 <script setup>
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
-import * as echarts from 'echarts'
 import DOMPurify from 'dompurify'
-import mermaid from 'mermaid'
 import { renderMarkdown } from '../utils/markdown'
+import { useUiStore } from '../stores/ui'
+
+const ui = useUiStore()
+
+// echarts + mermaid are heavy (~1MB combined); load them on demand so the
+// chat route doesn't pay for them until a chart/diagram block actually renders.
+let echartsPromise = null
+const loadECharts = () => (echartsPromise ||= import('echarts'))
+let mermaidPromise = null
+const loadMermaid = () => (mermaidPromise ||= import('mermaid').then((m) => m.default))
 
 const props = defineProps({
   block: { type: Object, required: true }
@@ -127,6 +135,7 @@ let chartInstance = null
 
 async function renderChart() {
   if (props.block.type !== 'chart') return
+  const echarts = await loadECharts()
   await nextTick()
   if (!chartEl.value) return
   if (!chartInstance) {
@@ -142,22 +151,25 @@ async function renderChart() {
 // ----- Mermaid -----
 const mermaidEl = ref(null)
 const mermaidSvg = ref('')
-let mermaidInited = false
 
 async function renderMermaid() {
   if (props.block.type !== 'diagram') return
-  if (!mermaidInited) {
-    mermaid.initialize({ startOnLoad: false, securityLevel: 'loose', theme: 'default' })
-    mermaidInited = true
-  }
   const source = props.block.source || ''
   if (!source) return
+  const mermaid = await loadMermaid()
+  // Re-init per render so the diagram tracks the current light/dark theme.
+  const dark = document.documentElement.getAttribute('data-theme') !== 'light'
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: dark ? 'dark' : 'default'
+  })
   try {
     const id = `mmd-${Math.random().toString(36).slice(2, 10)}`
     const { svg } = await mermaid.render(id, source)
     mermaidSvg.value = svg
   } catch (e) {
-    mermaidSvg.value = `<pre style="color:#c00">Mermaid 渲染失败: ${escapeHtml(e.message || String(e))}\n\n${escapeHtml(source)}</pre>`
+    mermaidSvg.value = `<pre style="color:var(--danger,#c00)">Mermaid 渲染失败: ${escapeHtml(e.message || String(e))}\n\n${escapeHtml(source)}</pre>`
   }
 }
 
@@ -175,6 +187,14 @@ watch(
     if (props.block.type === 'diagram') renderMermaid()
   },
   { immediate: true, deep: true }
+)
+
+// Re-render diagrams on theme switch so they match the active palette.
+watch(
+  () => ui.theme,
+  () => {
+    if (props.block.type === 'diagram') renderMermaid()
+  }
 )
 
 function onResize() {
@@ -195,8 +215,8 @@ onBeforeUnmount(() => {
 .block-title {
   font-weight: 600;
   margin: 4px 0 6px;
-  font-size: 14px;
-  color: #303133;
+  font-size: var(--fs-base, 14px);
+  color: var(--text, #303133);
 }
 .chart-box {
   width: 100%;
@@ -206,8 +226,8 @@ onBeforeUnmount(() => {
 .svg-box {
   width: 100%;
   overflow: auto;
-  background: #fff;
-  border-radius: 6px;
+  background: var(--surface, #fff);
+  border-radius: var(--r-md, 6px);
 }
 .mermaid-box :deep(svg),
 .svg-box :deep(svg) {
@@ -217,13 +237,13 @@ onBeforeUnmount(() => {
 .html-frame {
   width: 100%;
   min-height: 320px;
-  border: 1px solid #ebeef5;
-  border-radius: 6px;
+  border: 1px solid var(--border, #ebeef5);
+  border-radius: var(--r-md, 6px);
   background: #fff;
 }
 .block-image {
   max-width: 100%;
-  border-radius: 6px;
+  border-radius: var(--r-md, 6px);
 }
 .file-block {
   padding: 4px 0;
@@ -232,15 +252,15 @@ onBeforeUnmount(() => {
   margin: 0 6px;
 }
 .file-size {
-  color: #909399;
-  font-size: 12px;
+  color: var(--text-muted, #909399);
+  font-size: var(--fs-xs, 12px);
 }
 .data-pre {
-  background: #1e1e1e;
-  color: #e6e6e6;
+  background: var(--surface-3, #1e1e1e);
+  color: var(--text, #e6e6e6);
   padding: 10px;
-  border-radius: 6px;
+  border-radius: var(--r-md, 6px);
   overflow: auto;
-  font-size: 12px;
+  font-size: var(--fs-xs, 12px);
 }
 </style>
