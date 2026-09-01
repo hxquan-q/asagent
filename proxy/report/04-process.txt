@@ -1,0 +1,2 @@
+    PID STAT CMD
+   1655 Sl   ./gost -L socks5://dev_17647e:f2BPDUMlhzHOoLBMVgJyd5eq@127.0.0.1:1080

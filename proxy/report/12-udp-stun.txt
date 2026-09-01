@@ -1,0 +1,9 @@
+stun.l.google.com -> 44.236.205.197:42984
+stun.l.google.com -> 52.13.17.46:55705
+stun.l.google.com -> 52.13.17.46:13779
+stun.cloudflare.com err: timed out
+stun.cloudflare.com err: timed out
+stun.cloudflare.com err: timed out
+stun1.l.google.com -> 44.236.205.197:2589
+stun1.l.google.com -> 54.201.20.43:28150
+stun1.l.google.com -> 44.236.205.197:12976

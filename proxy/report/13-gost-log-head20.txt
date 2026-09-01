@@ -1,0 +1,20 @@
+2026/09/01 05:29:24 route.go:695: socks5://127.0.0.1:1080 on 127.0.0.1:1080
+2026/09/01 05:30:00 socks.go:889: [socks5] 127.0.0.1:32980 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:30:00 socks.go:941: [route] 127.0.0.1:32980 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:30:00 socks.go:976: [socks5] 127.0.0.1:32980 <-> checkip.amazonaws.com:443
+2026/09/01 05:30:00 socks.go:978: [socks5] 127.0.0.1:32980 >-< checkip.amazonaws.com:443
+2026/09/01 05:30:00 socks.go:889: [socks5] 127.0.0.1:32984 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:30:00 socks.go:941: [route] 127.0.0.1:32984 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:30:00 socks.go:976: [socks5] 127.0.0.1:32984 <-> checkip.amazonaws.com:443
+2026/09/01 05:30:01 socks.go:978: [socks5] 127.0.0.1:32984 >-< checkip.amazonaws.com:443
+2026/09/01 05:30:01 socks.go:889: [socks5] 127.0.0.1:32988 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:30:01 socks.go:941: [route] 127.0.0.1:32988 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:30:01 socks.go:976: [socks5] 127.0.0.1:32988 <-> checkip.amazonaws.com:443
+2026/09/01 05:30:01 socks.go:978: [socks5] 127.0.0.1:32988 >-< checkip.amazonaws.com:443
+2026/09/01 05:30:02 socks.go:889: [socks5] 127.0.0.1:32994 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:30:02 socks.go:941: [route] 127.0.0.1:32994 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:30:02 socks.go:976: [socks5] 127.0.0.1:32994 <-> checkip.amazonaws.com:443
+2026/09/01 05:30:02 socks.go:978: [socks5] 127.0.0.1:32994 >-< checkip.amazonaws.com:443
+2026/09/01 05:30:02 socks.go:889: [socks5] 127.0.0.1:33008 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:30:02 socks.go:941: [route] 127.0.0.1:33008 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:30:02 socks.go:976: [socks5] 127.0.0.1:33008 <-> checkip.amazonaws.com:443
