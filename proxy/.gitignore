@@ -1,0 +1,5 @@
+# runtime / secrets / binary (on-disk for VM snapshot; not for git)
+gost
+gost.pid
+.credentials
+*.log
