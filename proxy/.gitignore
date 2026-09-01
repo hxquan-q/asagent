@@ -1,0 +1,2 @@
+# Root .gitignore ignores *.log; keep gost startup/runtime logs in report/.
+!report/*.log

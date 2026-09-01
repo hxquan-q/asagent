@@ -1,0 +1,1 @@
+gost 2.11.5 (go1.19.2 linux/amd64)

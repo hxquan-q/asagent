@@ -1,0 +1,245 @@
+2026/09/01 05:22:35 route.go:695: socks5://127.0.0.1:1080 on 127.0.0.1:1080
+2026/09/01 05:22:57 socks.go:889: [socks5] 127.0.0.1:60730 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:22:57 socks.go:941: [route] 127.0.0.1:60730 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:22:57 socks.go:976: [socks5] 127.0.0.1:60730 <-> checkip.amazonaws.com:443
+2026/09/01 05:22:57 socks.go:978: [socks5] 127.0.0.1:60730 >-< checkip.amazonaws.com:443
+2026/09/01 05:22:57 socks.go:889: [socks5] 127.0.0.1:60742 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:22:57 socks.go:941: [route] 127.0.0.1:60742 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:22:57 socks.go:976: [socks5] 127.0.0.1:60742 <-> checkip.amazonaws.com:443
+2026/09/01 05:22:58 socks.go:978: [socks5] 127.0.0.1:60742 >-< checkip.amazonaws.com:443
+2026/09/01 05:22:58 socks.go:889: [socks5] 127.0.0.1:33506 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:22:58 socks.go:941: [route] 127.0.0.1:33506 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:22:58 socks.go:976: [socks5] 127.0.0.1:33506 <-> checkip.amazonaws.com:443
+2026/09/01 05:22:58 socks.go:978: [socks5] 127.0.0.1:33506 >-< checkip.amazonaws.com:443
+2026/09/01 05:22:59 socks.go:889: [socks5] 127.0.0.1:33510 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:22:59 socks.go:941: [route] 127.0.0.1:33510 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:22:59 socks.go:976: [socks5] 127.0.0.1:33510 <-> checkip.amazonaws.com:443
+2026/09/01 05:22:59 socks.go:978: [socks5] 127.0.0.1:33510 >-< checkip.amazonaws.com:443
+2026/09/01 05:22:59 socks.go:889: [socks5] 127.0.0.1:33524 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:22:59 socks.go:941: [route] 127.0.0.1:33524 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:22:59 socks.go:976: [socks5] 127.0.0.1:33524 <-> checkip.amazonaws.com:443
+2026/09/01 05:22:59 socks.go:978: [socks5] 127.0.0.1:33524 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:00 socks.go:889: [socks5] 127.0.0.1:33528 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:00 socks.go:941: [route] 127.0.0.1:33528 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:00 socks.go:976: [socks5] 127.0.0.1:33528 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:00 socks.go:978: [socks5] 127.0.0.1:33528 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:00 socks.go:889: [socks5] 127.0.0.1:33544 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:00 socks.go:941: [route] 127.0.0.1:33544 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:00 socks.go:976: [socks5] 127.0.0.1:33544 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:01 socks.go:978: [socks5] 127.0.0.1:33544 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:01 socks.go:889: [socks5] 127.0.0.1:33558 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:01 socks.go:941: [route] 127.0.0.1:33558 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:01 socks.go:976: [socks5] 127.0.0.1:33558 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:01 socks.go:978: [socks5] 127.0.0.1:33558 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:02 socks.go:889: [socks5] 127.0.0.1:33572 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:02 socks.go:941: [route] 127.0.0.1:33572 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:02 socks.go:976: [socks5] 127.0.0.1:33572 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:02 socks.go:978: [socks5] 127.0.0.1:33572 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:02 socks.go:889: [socks5] 127.0.0.1:33586 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:02 socks.go:941: [route] 127.0.0.1:33586 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:02 socks.go:976: [socks5] 127.0.0.1:33586 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:02 socks.go:978: [socks5] 127.0.0.1:33586 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:03 socks.go:889: [socks5] 127.0.0.1:33590 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:03 socks.go:941: [route] 127.0.0.1:33590 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:03 socks.go:976: [socks5] 127.0.0.1:33590 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:03 socks.go:978: [socks5] 127.0.0.1:33590 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:03 socks.go:889: [socks5] 127.0.0.1:33592 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:03 socks.go:941: [route] 127.0.0.1:33592 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:03 socks.go:976: [socks5] 127.0.0.1:33592 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:04 socks.go:978: [socks5] 127.0.0.1:33592 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:04 socks.go:889: [socks5] 127.0.0.1:33600 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:04 socks.go:941: [route] 127.0.0.1:33600 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:04 socks.go:976: [socks5] 127.0.0.1:33600 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:04 socks.go:978: [socks5] 127.0.0.1:33600 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:05 socks.go:889: [socks5] 127.0.0.1:33614 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:05 socks.go:941: [route] 127.0.0.1:33614 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:05 socks.go:976: [socks5] 127.0.0.1:33614 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:05 socks.go:978: [socks5] 127.0.0.1:33614 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:05 socks.go:889: [socks5] 127.0.0.1:33616 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:05 socks.go:941: [route] 127.0.0.1:33616 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:05 socks.go:976: [socks5] 127.0.0.1:33616 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:05 socks.go:978: [socks5] 127.0.0.1:33616 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:06 socks.go:889: [socks5] 127.0.0.1:33622 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:06 socks.go:941: [route] 127.0.0.1:33622 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:06 socks.go:976: [socks5] 127.0.0.1:33622 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:06 socks.go:978: [socks5] 127.0.0.1:33622 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:06 socks.go:889: [socks5] 127.0.0.1:33628 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:06 socks.go:941: [route] 127.0.0.1:33628 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:06 socks.go:976: [socks5] 127.0.0.1:33628 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:07 socks.go:978: [socks5] 127.0.0.1:33628 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:07 socks.go:889: [socks5] 127.0.0.1:33630 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:07 socks.go:941: [route] 127.0.0.1:33630 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:07 socks.go:976: [socks5] 127.0.0.1:33630 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:07 socks.go:978: [socks5] 127.0.0.1:33630 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:08 socks.go:889: [socks5] 127.0.0.1:33638 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:08 socks.go:941: [route] 127.0.0.1:33638 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:08 socks.go:976: [socks5] 127.0.0.1:33638 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:08 socks.go:978: [socks5] 127.0.0.1:33638 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:08 socks.go:889: [socks5] 127.0.0.1:49896 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:08 socks.go:941: [route] 127.0.0.1:49896 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:08 socks.go:976: [socks5] 127.0.0.1:49896 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:08 socks.go:978: [socks5] 127.0.0.1:49896 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:09 socks.go:889: [socks5] 127.0.0.1:49900 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:09 socks.go:941: [route] 127.0.0.1:49900 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:09 socks.go:976: [socks5] 127.0.0.1:49900 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:09 socks.go:978: [socks5] 127.0.0.1:49900 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:09 socks.go:889: [socks5] 127.0.0.1:49914 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:09 socks.go:941: [route] 127.0.0.1:49914 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:09 socks.go:976: [socks5] 127.0.0.1:49914 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:10 socks.go:978: [socks5] 127.0.0.1:49914 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:10 socks.go:889: [socks5] 127.0.0.1:49920 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:10 socks.go:941: [route] 127.0.0.1:49920 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:10 socks.go:976: [socks5] 127.0.0.1:49920 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:10 socks.go:978: [socks5] 127.0.0.1:49920 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:11 socks.go:889: [socks5] 127.0.0.1:49924 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:11 socks.go:941: [route] 127.0.0.1:49924 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:11 socks.go:976: [socks5] 127.0.0.1:49924 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:11 socks.go:978: [socks5] 127.0.0.1:49924 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:11 socks.go:889: [socks5] 127.0.0.1:49936 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:11 socks.go:941: [route] 127.0.0.1:49936 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:11 socks.go:976: [socks5] 127.0.0.1:49936 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:12 socks.go:978: [socks5] 127.0.0.1:49936 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:12 socks.go:889: [socks5] 127.0.0.1:49948 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:12 socks.go:941: [route] 127.0.0.1:49948 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:12 socks.go:976: [socks5] 127.0.0.1:49948 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:12 socks.go:978: [socks5] 127.0.0.1:49948 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:12 socks.go:889: [socks5] 127.0.0.1:49950 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:12 socks.go:941: [route] 127.0.0.1:49950 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:12 socks.go:976: [socks5] 127.0.0.1:49950 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:13 socks.go:978: [socks5] 127.0.0.1:49950 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:13 socks.go:889: [socks5] 127.0.0.1:49962 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:13 socks.go:941: [route] 127.0.0.1:49962 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:13 socks.go:976: [socks5] 127.0.0.1:49962 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:13 socks.go:978: [socks5] 127.0.0.1:49962 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:14 socks.go:889: [socks5] 127.0.0.1:49966 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:14 socks.go:941: [route] 127.0.0.1:49966 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:14 socks.go:976: [socks5] 127.0.0.1:49966 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:14 socks.go:978: [socks5] 127.0.0.1:49966 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:14 socks.go:889: [socks5] 127.0.0.1:49972 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:14 socks.go:941: [route] 127.0.0.1:49972 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:14 socks.go:976: [socks5] 127.0.0.1:49972 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:14 socks.go:978: [socks5] 127.0.0.1:49972 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:15 socks.go:889: [socks5] 127.0.0.1:49974 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:15 socks.go:941: [route] 127.0.0.1:49974 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:15 socks.go:976: [socks5] 127.0.0.1:49974 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:15 socks.go:978: [socks5] 127.0.0.1:49974 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:15 socks.go:889: [socks5] 127.0.0.1:49986 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:15 socks.go:941: [route] 127.0.0.1:49986 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:16 socks.go:976: [socks5] 127.0.0.1:49986 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:16 socks.go:978: [socks5] 127.0.0.1:49986 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:16 socks.go:889: [socks5] 127.0.0.1:49994 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:16 socks.go:941: [route] 127.0.0.1:49994 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:16 socks.go:976: [socks5] 127.0.0.1:49994 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:16 socks.go:978: [socks5] 127.0.0.1:49994 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:17 socks.go:889: [socks5] 127.0.0.1:50000 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:17 socks.go:941: [route] 127.0.0.1:50000 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:17 socks.go:976: [socks5] 127.0.0.1:50000 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:17 socks.go:978: [socks5] 127.0.0.1:50000 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:17 socks.go:889: [socks5] 127.0.0.1:50010 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:17 socks.go:941: [route] 127.0.0.1:50010 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:17 socks.go:976: [socks5] 127.0.0.1:50010 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:17 socks.go:978: [socks5] 127.0.0.1:50010 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:18 socks.go:889: [socks5] 127.0.0.1:33296 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:18 socks.go:941: [route] 127.0.0.1:33296 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:18 socks.go:976: [socks5] 127.0.0.1:33296 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:18 socks.go:978: [socks5] 127.0.0.1:33296 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:18 socks.go:889: [socks5] 127.0.0.1:33302 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:18 socks.go:941: [route] 127.0.0.1:33302 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:18 socks.go:976: [socks5] 127.0.0.1:33302 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:19 socks.go:978: [socks5] 127.0.0.1:33302 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:19 socks.go:889: [socks5] 127.0.0.1:33308 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:19 socks.go:941: [route] 127.0.0.1:33308 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:19 socks.go:976: [socks5] 127.0.0.1:33308 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:19 socks.go:978: [socks5] 127.0.0.1:33308 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:20 socks.go:889: [socks5] 127.0.0.1:33318 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:20 socks.go:941: [route] 127.0.0.1:33318 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:20 socks.go:976: [socks5] 127.0.0.1:33318 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:20 socks.go:978: [socks5] 127.0.0.1:33318 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:20 socks.go:889: [socks5] 127.0.0.1:33330 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:20 socks.go:941: [route] 127.0.0.1:33330 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:20 socks.go:976: [socks5] 127.0.0.1:33330 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:20 socks.go:978: [socks5] 127.0.0.1:33330 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:21 socks.go:889: [socks5] 127.0.0.1:33340 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:21 socks.go:941: [route] 127.0.0.1:33340 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:21 socks.go:976: [socks5] 127.0.0.1:33340 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:21 socks.go:978: [socks5] 127.0.0.1:33340 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:21 socks.go:889: [socks5] 127.0.0.1:33348 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:21 socks.go:941: [route] 127.0.0.1:33348 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:21 socks.go:976: [socks5] 127.0.0.1:33348 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:22 socks.go:978: [socks5] 127.0.0.1:33348 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:22 socks.go:889: [socks5] 127.0.0.1:33354 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:22 socks.go:941: [route] 127.0.0.1:33354 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:22 socks.go:976: [socks5] 127.0.0.1:33354 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:22 socks.go:978: [socks5] 127.0.0.1:33354 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:23 socks.go:889: [socks5] 127.0.0.1:33368 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:23 socks.go:941: [route] 127.0.0.1:33368 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:23 socks.go:976: [socks5] 127.0.0.1:33368 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:23 socks.go:978: [socks5] 127.0.0.1:33368 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:23 socks.go:889: [socks5] 127.0.0.1:33378 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:23 socks.go:941: [route] 127.0.0.1:33378 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:23 socks.go:976: [socks5] 127.0.0.1:33378 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:23 socks.go:978: [socks5] 127.0.0.1:33378 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:24 socks.go:889: [socks5] 127.0.0.1:33388 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:24 socks.go:941: [route] 127.0.0.1:33388 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:24 socks.go:976: [socks5] 127.0.0.1:33388 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:24 socks.go:978: [socks5] 127.0.0.1:33388 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:24 socks.go:889: [socks5] 127.0.0.1:33398 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:24 socks.go:941: [route] 127.0.0.1:33398 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:24 socks.go:976: [socks5] 127.0.0.1:33398 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:25 socks.go:978: [socks5] 127.0.0.1:33398 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:25 socks.go:889: [socks5] 127.0.0.1:33414 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:25 socks.go:941: [route] 127.0.0.1:33414 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:25 socks.go:976: [socks5] 127.0.0.1:33414 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:25 socks.go:978: [socks5] 127.0.0.1:33414 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:26 socks.go:889: [socks5] 127.0.0.1:33424 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:26 socks.go:941: [route] 127.0.0.1:33424 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:26 socks.go:976: [socks5] 127.0.0.1:33424 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:26 socks.go:978: [socks5] 127.0.0.1:33424 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:26 socks.go:889: [socks5] 127.0.0.1:33436 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:26 socks.go:941: [route] 127.0.0.1:33436 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:26 socks.go:976: [socks5] 127.0.0.1:33436 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:26 socks.go:978: [socks5] 127.0.0.1:33436 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:27 socks.go:889: [socks5] 127.0.0.1:33438 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:27 socks.go:941: [route] 127.0.0.1:33438 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:27 socks.go:976: [socks5] 127.0.0.1:33438 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:27 socks.go:978: [socks5] 127.0.0.1:33438 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:27 socks.go:889: [socks5] 127.0.0.1:33448 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:27 socks.go:941: [route] 127.0.0.1:33448 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:27 socks.go:976: [socks5] 127.0.0.1:33448 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:28 socks.go:978: [socks5] 127.0.0.1:33448 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:28 socks.go:889: [socks5] 127.0.0.1:49850 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:28 socks.go:941: [route] 127.0.0.1:49850 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:28 socks.go:976: [socks5] 127.0.0.1:49850 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:28 socks.go:978: [socks5] 127.0.0.1:49850 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:29 socks.go:889: [socks5] 127.0.0.1:49866 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:29 socks.go:941: [route] 127.0.0.1:49866 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:29 socks.go:976: [socks5] 127.0.0.1:49866 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:29 socks.go:978: [socks5] 127.0.0.1:49866 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:29 socks.go:889: [socks5] 127.0.0.1:49876 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:29 socks.go:941: [route] 127.0.0.1:49876 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:29 socks.go:976: [socks5] 127.0.0.1:49876 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:29 socks.go:978: [socks5] 127.0.0.1:49876 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:30 socks.go:889: [socks5] 127.0.0.1:49884 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:30 socks.go:941: [route] 127.0.0.1:49884 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:30 socks.go:976: [socks5] 127.0.0.1:49884 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:30 socks.go:978: [socks5] 127.0.0.1:49884 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:30 socks.go:889: [socks5] 127.0.0.1:49886 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:30 socks.go:941: [route] 127.0.0.1:49886 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:30 socks.go:976: [socks5] 127.0.0.1:49886 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:31 socks.go:978: [socks5] 127.0.0.1:49886 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:31 socks.go:889: [socks5] 127.0.0.1:49896 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:31 socks.go:941: [route] 127.0.0.1:49896 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:31 socks.go:976: [socks5] 127.0.0.1:49896 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:31 socks.go:978: [socks5] 127.0.0.1:49896 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:32 socks.go:889: [socks5] 127.0.0.1:49902 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:32 socks.go:941: [route] 127.0.0.1:49902 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:32 socks.go:976: [socks5] 127.0.0.1:49902 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:32 socks.go:978: [socks5] 127.0.0.1:49902 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:32 socks.go:889: [socks5] 127.0.0.1:49906 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:32 socks.go:941: [route] 127.0.0.1:49906 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:32 socks.go:976: [socks5] 127.0.0.1:49906 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:32 socks.go:978: [socks5] 127.0.0.1:49906 >-< checkip.amazonaws.com:443
+2026/09/01 05:23:37 socks.go:889: [socks5] 127.0.0.1:49922 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:37 socks.go:941: [route] 127.0.0.1:49922 -> socks5://127.0.0.1:1080 -> checkip.amazonaws.com:443
+2026/09/01 05:23:37 socks.go:976: [socks5] 127.0.0.1:49922 <-> checkip.amazonaws.com:443
+2026/09/01 05:23:38 socks.go:978: [socks5] 127.0.0.1:49922 >-< checkip.amazonaws.com:443

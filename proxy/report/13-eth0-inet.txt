@@ -1,0 +1,2 @@
+    inet 172.30.0.2/24 brd 172.30.0.255 scope global eth0
+    inet6 fe80::802b:38ff:fe3d:bcd0/64 scope link 

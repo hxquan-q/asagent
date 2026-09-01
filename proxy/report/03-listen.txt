@@ -1,0 +1,9 @@
+LISTEN 0      4096       127.0.0.1:1080       0.0.0.0:*    users:(("gost",pid=2856,fd=8))      
+LISTEN 0      5          127.0.0.1:5901       0.0.0.0:*    users:(("Xtigervnc",pid=2080,fd=9)) 
+LISTEN 0      5            0.0.0.0:2375       0.0.0.0:*                                        
+LISTEN 0      128          0.0.0.0:50052      0.0.0.0:*                                        
+LISTEN 0      128          0.0.0.0:26500      0.0.0.0:*                                        
+LISTEN 0      100          0.0.0.0:26058      0.0.0.0:*    users:(("python3",pid=2305,fd=3))   
+LISTEN 0      5              [::1]:5901          [::]:*    users:(("Xtigervnc",pid=2080,fd=10))
+LISTEN 0      511                *:26054            *:*    users:(("node",pid=1502,fd=22))     
+LISTEN 0      511                *:26053            *:*    users:(("node",pid=1502,fd=21))     
