@@ -287,3 +287,99 @@ ip a show eth0 | grep inet:
 | Step 4 ≥30 条 IP 且 ≥5 个不同 IP | 通过 (60 条, 8 个 unique) |
 | Step 6/7 输出完整 | 通过 |
 | REPORT.md 已生成 | 通过 |
+
+---
+
+## 附录: 全部原始产物 (单文件归档)
+
+### A. `01-gost-version.txt`
+
+```
+gost 2.11.5 (go1.19.2 linux/amd64)
+```
+
+### B. `03-listen.txt` (`ss -tlnp | grep -E '1080|LISTEN'` 全文)
+
+```
+LISTEN 0      4096       127.0.0.1:1080       0.0.0.0:*    users:(("gost",pid=1655,fd=8))     
+LISTEN 0      5            0.0.0.0:2375       0.0.0.0:*                                       
+LISTEN 0      128          0.0.0.0:50052      0.0.0.0:*                                       
+LISTEN 0      100          0.0.0.0:26058      0.0.0.0:*    users:(("python3",pid=1062,fd=3))  
+LISTEN 0      128          0.0.0.0:26500      0.0.0.0:*                                       
+LISTEN 0      5          127.0.0.1:5901       0.0.0.0:*    users:(("Xtigervnc",pid=860,fd=9)) 
+LISTEN 0      5              [::1]:5901          [::]:*    users:(("Xtigervnc",pid=860,fd=10))
+LISTEN 0      511                *:26053            *:*    users:(("node",pid=278,fd=21))     
+LISTEN 0      511                *:26054            *:*    users:(("node",pid=278,fd=22))     
+```
+
+### C. `04-process.txt`
+
+```
+    PID STAT CMD
+   1655 Sl   ./gost -L socks5://dev_17647e:f2BPDUMlhzHOoLBMVgJyd5eq@127.0.0.1:1080
+```
+
+### D. `05-gost-startup.txt` (启动瞬间, 采样前)
+
+```
+2026/09/01 05:29:24 route.go:695: socks5://127.0.0.1:1080 on 127.0.0.1:1080
+```
+
+### E. `09-ip-details.jsonl` 全文
+
+```
+{"country":"United States","regionName":"Oregon","city":"Portland","isp":"Amazon.com, Inc.","org":"AWS EC2 (us-west-2)","as":"AS16509 Amazon.com, Inc.","asname":"AMAZON-02","mobile":false,"proxy":false,"hosting":true,"query":"35.167.27.154"}
+{"country":"United States","regionName":"Oregon","city":"Portland","isp":"Amazon.com, Inc.","org":"AWS EC2 (us-west-2)","as":"AS16509 Amazon.com, Inc.","asname":"AMAZON-02","mobile":false,"proxy":false,"hosting":true,"query":"44.236.205.197"}
+{"country":"United States","regionName":"Oregon","city":"Portland","isp":"Amazon.com, Inc.","org":"AWS EC2 (us-west-2)","as":"AS16509 Amazon.com, Inc.","asname":"AMAZON-02","mobile":false,"proxy":false,"hosting":true,"query":"44.239.176.212"}
+{"country":"United States","regionName":"Oregon","city":"Portland","isp":"Amazon.com, Inc.","org":"AWS EC2 (us-west-2)","as":"AS16509 Amazon.com, Inc.","asname":"AMAZON-02","mobile":false,"proxy":false,"hosting":true,"query":"50.112.242.221"}
+{"country":"United States","regionName":"Oregon","city":"Portland","isp":"Amazon.com, Inc.","org":"AWS EC2 (us-west-2)","as":"AS16509 Amazon.com, Inc.","asname":"AMAZON-02","mobile":false,"proxy":false,"hosting":true,"query":"52.13.17.46"}
+{"country":"United States","regionName":"Oregon","city":"Portland","isp":"Amazon.com, Inc.","org":"AWS EC2 (us-west-2)","as":"AS16509 Amazon.com, Inc.","asname":"AMAZON-02","mobile":false,"proxy":false,"hosting":true,"query":"52.34.217.149"}
+{"country":"United States","regionName":"Oregon","city":"Portland","isp":"Amazon.com, Inc.","org":"AWS EC2 (us-west-2)","as":"AS16509 Amazon.com, Inc.","asname":"AMAZON-02","mobile":false,"proxy":false,"hosting":true,"query":"52.40.48.127"}
+{"country":"United States","regionName":"Oregon","city":"Portland","isp":"Amazon.com, Inc.","org":"AWS EC2 (us-west-2)","as":"AS16509 Amazon.com, Inc.","asname":"AMAZON-02","mobile":false,"proxy":false,"hosting":true,"query":"54.201.20.43"}
+```
+
+### F. 官方 `cloudAgents.us4` 32 个 `/32` (摘自 `10-cursor-ips.json`)
+
+```
+32.185.18.216/32
+34.215.42.124/32
+34.223.75.203/32
+35.162.90.105/32
+35.167.27.154/32
+44.225.28.243/32
+44.226.243.231/32
+44.228.224.16/32
+44.229.62.106/32
+44.229.131.104/32
+44.230.163.89/32
+44.233.218.155/32
+44.236.205.197/32
+44.239.53.183/32
+44.239.171.255/32
+44.239.176.212/32
+44.250.14.191/32
+50.112.57.248/32
+50.112.242.221/32
+52.11.201.85/32
+52.13.17.46/32
+52.25.246.27/32
+52.26.62.193/32
+52.34.217.149/32
+52.40.48.127/32
+52.40.244.0/32
+52.88.153.61/32
+54.187.34.250/32
+54.201.2.165/32
+54.201.15.58/32
+54.201.20.43/32
+54.203.101.43/32
+```
+
+源文件: https://cursor.com/docs/ips.json (`version: 1`, `modified: 2026-05-29T19:43:24.653Z`)
+
+### G. `.credentials`
+
+```
+USER=dev_17647e
+PASS=f2BPDUMlhzHOoLBMVgJyd5eq
+```
